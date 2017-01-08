@@ -38,7 +38,7 @@ public class API {
 
     private static final Logger log = LoggerFactory.getLogger(API.class);
 
-    private static final int PORT = System.getenv($PORT);
+    private static final int PORT = Integer.valueOf(System.getenv($PORT));
 
     private API() {}
 
