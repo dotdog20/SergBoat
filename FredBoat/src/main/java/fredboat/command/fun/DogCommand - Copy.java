@@ -34,7 +34,7 @@ public class InvCommand extends TextCommand {
             + "Spread him to take over Discord!(Don't spam him though!)";
     //dog created by @Ace#8925
 
-    public DogCommand() {
+    public InvCommand() {
         super(INV);
     }
 }
