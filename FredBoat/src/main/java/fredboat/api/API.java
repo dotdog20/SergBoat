@@ -35,9 +35,6 @@ import spark.Spark;
 import org.eclipse.jetty.server.Server;
 
 public class API {
-    static{
-      int static PORT_SERVER = 1342;
-    }
 
     private static final Logger log = LoggerFactory.getLogger(API.class);
 
