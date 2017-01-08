@@ -1,1 +1,1 @@
-worker: java -jar FredBoat/target/FredBoat-1.0.jar --port 1356
+worker: java -jar FredBoat/target/FredBoat-1.0.jar --port 1872
