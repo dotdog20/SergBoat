@@ -83,7 +83,7 @@ public class CommandInitializer {
         CommandRegistry.registerCommand(0x101, "softban", new SoftbanCommand());
         CommandRegistry.registerCommand(0x101, "catgirl", new CatgirlCommand());
         CommandRegistry.registerCommand(0x101, "shards", new ShardsCommand());
-        
+
         /* Music commands */
         CommandRegistry.registerCommand(0x010, "mexit", new ExitCommand());
         CommandRegistry.registerCommand(0x010, "mbotrestart", new BotRestartCommand());
@@ -149,7 +149,9 @@ public class CommandInitializer {
         CommandRegistry.registerCommand(0x101, "hug", new RemoteFileCommand("http://i.imgur.com/U2l7mnr.gif"));
         CommandRegistry.registerCommand(0x101, "powerpoint", new RemoteFileCommand("http://puu.sh/rISIl/1cc927ece3.PNG"));
         CommandRegistry.registerCommand(0x101, "cooldog", new DogCommand());
+        CommandRegistry.registerCommand(0x101, "inv", new InvCommand());
         CommandRegistry.registerAlias("cooldog", "dog");
+        CommandRegistry.registerAlias("inv", "invite");
         CommandRegistry.registerAlias("cooldog", "dogmeme");
         CommandRegistry.registerCommand(0x101, "lood", new TextCommand("T-that's l-lewd, baka!!!"));
         CommandRegistry.registerAlias("lood", "lewd");

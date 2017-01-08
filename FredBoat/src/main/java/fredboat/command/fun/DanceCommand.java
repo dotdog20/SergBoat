@@ -48,9 +48,9 @@ public class DanceCommand extends Command implements ICommand {
                     long start = System.currentTimeMillis();
                         synchronized (this) {
                             while (start + 60000 > System.currentTimeMillis()) {
-                                wait(1000);
+                                wait(100);
                                 msg = msg.editMessage("/o/").complete(true);
-                                wait(1000);
+                                wait(100);
                                 msg = msg.editMessage("\\o\\").complete(true);
                             }
                         }
