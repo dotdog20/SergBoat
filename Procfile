@@ -1,0 +1,1 @@
+web: java -jar FredBoat/target/FredBoat-1.0.jar --port 1872
