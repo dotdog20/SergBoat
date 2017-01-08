@@ -35,10 +35,10 @@ import spark.Spark;
 import org.eclipse.jetty.server.Server;
 
 public class API {
-
+    int static PORT_SERVER = 1342;
     private static final Logger log = LoggerFactory.getLogger(API.class);
 
-    private static final int PORT = Integer.valueOf(System.getenv($PORT));
+    private static final int PORT = Integer.valueOf(System.getenv(PORT_SERVER));
 
     private API() {}
 
