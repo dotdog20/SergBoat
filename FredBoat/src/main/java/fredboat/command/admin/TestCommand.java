@@ -43,7 +43,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class TestCommand extends Command implements ICommandOwnerRestricted {
+public class TestCommand extends Command {
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
