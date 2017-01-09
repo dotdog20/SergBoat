@@ -132,7 +132,98 @@ public class CommandInitializer {
 
         CommandRegistry.registerCommand(0x101, "nevrean", new RemoteFileCommand("http://pre07.deviantart.net/7fed/th/pre/f/2016/264/6/e/nevrean_lady___nevrean_bounty_huntress_by_mick39-d6ocmwo.jpg"));
         CommandRegistry.registerCommand(0x101, "cheese", new RemoteFileCommand("https://www.weasyl.com/%7Escritch/submissions/252410/ded7d1b47620a488bbebbae6402fcb5186dc6ee3c8b5704168beb43d80612f2a/scritch-ol-cheese-wedge-head.jpg"));
-        CommandRegistry.registerCommand(0x101, "whats", new RemoteFileCommand("http://i.imgur.com/jeGVLk3.jpg"));
+        CommandRegistry.registerCommand(0x101, "mhelp", new RemoteFileCommand("/////////////////\n
+//Random Config//\n
+/////////////////\n
+\n
+;;help / ;;info\n
+;;version\n
+;;say\n
+;;uptime / ;;stats\n
+;;avatar\n
+;;test\n
+;;lua\n
+;;brainfuck\n
+;;joke\n
+;;riot\n
+;;find\n
+;;dance\n
+;;eval\n
+;;s / ;;shrug\n
+;;lenny\n
+;;useless\n
+;;clear\n
+;;talk\n
+;;dumpn\n
+;;fuzzy\n
+;;shards\n
+\n
+////////////\n
+////Music///\n
+////////////\n
+\n
+;;play\n
+\n
+;;mstats\n
+;;meval\n
+;;skip\n
+;;join / ;;summon\n
+;;nowplaying / ;;np\n
+;;leave\n
+;;list / ;;queue\n
+;;getid\n
+;;shuffle\n
+;;repeat\n
+;;volume / ;;vol\n
+;;restart\n
+;;export\n
+;;music / ;;musichelp\n
+;;gr\n
+\n
+;;stop\n
+;;pause\n
+;;unpause\n
+\n
+;;seek\n
+;;forward / ;;fwd / ;;f\n
+;;rewind / ;;rew / ;;r\n
+\n
+\n
+///////////\n
+////pic////\n
+///////////\n
+\n
+;;catgirl\n
+;;nevrean\n
+;;cheese\n
+;;whats\n
+;;serg\n
+;;sergal\n
+;;ram\n
+;;welcome\n
+;;rude\n
+;;fuck\n
+;;idc\n
+;;beingraped\n
+;;anime\n
+;;wow\n
+;;what\n
+;;pun\n
+;;die\n
+;;stupid\n
+;;cancer\n
+;;stupidbot\n
+;;escape\n
+;;explosion\n
+;;gif\n
+;;noods\n
+;;internetspeed\n
+;;hug\n
+;;powerpoint\n
+;;cooldog / ;;dog / ;;dogmeme\n
+;;inv / ;; invite\n
+;;lood / ;;lewd\n
+"));
         CommandRegistry.registerCommand(0x101, "serg", new TextCommand("```The Sergal (サーガル Sāgaru), is a fictional alien species created by Mick39. They belong to the Eltus race, alongside the Nevrean and Agudner in the Vilous universe, a science-fantasy world created by Mick.```"));
         CommandRegistry.registerCommand(0x101, "sergal", new RemoteFileCommand("http://orig08.deviantart.net/5ddf/f/2016/362/c/4/killthesergal_by_memyou-dat5xfh.png"));
         CommandRegistry.registerCommand(0x101, "ram", new RemoteFileCommand("http://i.imgur.com/jeGVLk3.jpg"));
@@ -193,7 +284,7 @@ public class CommandInitializer {
                 "http://stream1.gifsoup.com/webroot/animatedgifs/57302_o.gif",
                 "http://img.neoseeker.com/mgv/59301/301/26/facedesk_display.gif"
         };
-
+\
         CommandRegistry.registerCommand(0x101, "facedesk", new FacedeskCommand(facedesk));
 
         String[] roll = {
