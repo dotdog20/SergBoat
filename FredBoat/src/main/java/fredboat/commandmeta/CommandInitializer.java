@@ -193,7 +193,7 @@ public class CommandInitializer {
                 "http://stream1.gifsoup.com/webroot/animatedgifs/57302_o.gif",
                 "http://img.neoseeker.com/mgv/59301/301/26/facedesk_display.gif"
         };
-\
+
         CommandRegistry.registerCommand(0x101, "facedesk", new FacedeskCommand(facedesk));
 
         String[] roll = {
