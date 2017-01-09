@@ -43,7 +43,7 @@ public class BotConstants {
 
     public static final String HELP_TEXT = getHelpText();
 
-    public static final String DEFAULT_BOT_PREFIX = ";;";
+    public static final String DEFAULT_BOT_PREFIX = ";";
     public static final String DEFAULT_BOT_PREFIX_BETA = "¤";
     public static final String DEFAULT_SELF_PREFIX = "::";
     public static final String DEFAULT_SELF_PREFIX_BETA = "<<";
