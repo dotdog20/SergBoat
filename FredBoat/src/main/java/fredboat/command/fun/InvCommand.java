@@ -28,10 +28,10 @@ package fredboat.command.fun;
 public class InvCommand extends TextCommand {
 
     public static final String INV
-            = "This is FredBoat v.2"
-            + "Invite him to your own server with"
-            + "```https://discordapp.com/oauth2/authorize?client_id=265582173086547970&scope=bot&permissions=0```"
-            + "Spread him to take over Discord!(Don't spam him though!)";
+            = "This is FredBoat v0.2\n"
+            + "Invite him to your own server with\n"
+            + "https://discordapp.com/oauth2/authorize?client_id=265582173086547970&scope=bot&permissions=0 \n"
+            + "Spread him to take over Discord!\n";
     //dog created by @Ace#8925
 
     public InvCommand() {
