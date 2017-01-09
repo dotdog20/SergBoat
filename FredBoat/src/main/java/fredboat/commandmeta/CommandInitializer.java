@@ -89,6 +89,8 @@ public class CommandInitializer {
         CommandRegistry.registerCommand(0x010, "mbotrestart", new BotRestartCommand());
         CommandRegistry.registerCommand(0x010, "mstats", new StatsCommand());
         CommandRegistry.registerCommand(0x010, "play", new PlayCommand());
+        CommandRegistry.registerAlias("play", "p");
+        CommandRegistry.registerAlias("play", "paly");
         CommandRegistry.registerCommand(0x010, "meval", new EvalCommand());
         CommandRegistry.registerCommand(0x010, "skip", new SkipCommand());
         CommandRegistry.registerCommand(0x010, "join", new JoinCommand());
@@ -156,6 +158,8 @@ public class CommandInitializer {
         CommandRegistry.registerCommand(0x101, "internetspeed", new RemoteFileCommand("http://www.speedtest.net/result/5529046933.png"));
         CommandRegistry.registerCommand(0x101, "hug", new RemoteFileCommand("http://i.imgur.com/U2l7mnr.gif"));
         CommandRegistry.registerCommand(0x101, "powerpoint", new RemoteFileCommand("http://puu.sh/rISIl/1cc927ece3.PNG"));
+        CommandRegistry.registerCommand(0x101, "dad", new RemoteFileCommand("https://static.wixstatic.com/media/6930f2_1ab0e528927a4592ad941d829921d2c2.jpg/v1/fill/w_245,h_322,al_c,q_80,usm_0.66_1.00_0.01/6930f2_1ab0e528927a4592ad941d829921d2c2.jpg"));
+
         CommandRegistry.registerCommand(0x101, "cooldog", new DogCommand());
         CommandRegistry.registerCommand(0x101, "inv", new InvCommand());
         CommandRegistry.registerAlias("cooldog", "dog");
@@ -184,6 +188,24 @@ public class CommandInitializer {
                 "http://i.imgur.com/fSDbKwf.jpg",
                 "https://66.media.tumblr.com/ec7472fef28b2cdf394dc85132c22ed8/tumblr_mx1asbwrBv1qbvovho1_500.gif",};
         CommandRegistry.registerCommand(0x101, "pat", new PatCommand(pats));
+
+        String[] rans = {
+                "http://i.imgur.com/wF1ohrH.gif",
+                "http://cdn.photonesta.com/images/i.imgur.com/I3yvqFL.gif",
+                "http://i4.photobucket.com/albums/y131/quentinlau/Blog/sola-02-Large15.jpg",
+                "http://i.imgur.com/OYiSZWX.gif",
+                "http://i.imgur.com/tmidE9Q.gif",
+                "http://i.imgur.com/CoW20gH.gif",
+                "http://31.media.tumblr.com/e759f2da1f07de37832fc8269e99f1e7/tumblr_n3w02z954N1swm6rso1_500.gif",
+                "https://media1.giphy.com/media/ye7OTQgwmVuVy/200.gif",
+                "http://data.whicdn.com/images/224314340/large.gif",
+                "http://i.imgur.com/BNiNMWC.gifv",
+                "http://i.imgur.com/9q6fkSK.jpg",
+                "http://i.imgur.com/eOJlnwP.gif",
+                "http://i.imgur.com/i7bklkm.gif",
+                "http://i.imgur.com/fSDbKwf.jpg",
+                "https://66.media.tumblr.com/ec7472fef28b2cdf394dc85132c22ed8/tumblr_mx1asbwrBv1qbvovho1_500.gif",};
+        CommandRegistry.registerCommand(0x101, "ran", new RanCommand(rans));
 
         String[] facedesk = {
                 "https://45.media.tumblr.com/tumblr_lpzn2uFp4D1qew6kmo1_500.gif",
