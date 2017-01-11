@@ -143,6 +143,7 @@ public class CommandInitializer {
         CommandRegistry.registerCommand(0x101, "rude", new RemoteFileCommand("http://i.imgur.com/pUn7ijx.png"));
         CommandRegistry.registerCommand(0x101, "fuck", new RemoteFileCommand("http://i.imgur.com/1bllKNh.png"));
         CommandRegistry.registerCommand(0x101, "idc", new RemoteFileCommand("http://i.imgur.com/0ZPjpNg.png"));
+        CommandRegistry.registerCommand(0x101, "woof", new RemoteFileCommand("https://cdn.discordapp.com/attachments/262020093289037824/268502003792084995/images.png"));
         CommandRegistry.registerCommand(0x101, "beingraped", new RemoteFileCommand("http://i.imgur.com/dPsYRYV.png"));
         CommandRegistry.registerCommand(0x101, "anime", new RemoteFileCommand("https://cdn.discordapp.com/attachments/132490115137142784/177751190333816834/animeeee.png"));
         CommandRegistry.registerCommand(0x101, "wow", new RemoteFileCommand("http://img.prntscr.com/img?url=http://i.imgur.com/aexiMAG.png"));
