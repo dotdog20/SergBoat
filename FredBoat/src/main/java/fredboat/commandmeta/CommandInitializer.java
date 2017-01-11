@@ -82,6 +82,7 @@ public class CommandInitializer {
         CommandRegistry.registerCommand(0x101, "fuzzy", new FuzzyUserSearchCommand());
         CommandRegistry.registerCommand(0x101, "softban", new SoftbanCommand());
         CommandRegistry.registerCommand(0x101, "catgirl", new CatgirlCommand());
+        CommandRegistry.registerAlias("catgirl", "kittywoman");
         CommandRegistry.registerCommand(0x101, "shards", new ShardsCommand());
 
         /* Music commands */
