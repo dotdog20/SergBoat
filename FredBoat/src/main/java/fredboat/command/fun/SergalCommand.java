@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
 public class SergalCommand extends Command {
 
     private static final Pattern IMAGE_PATTERN = Pattern.compile("src=\"([^\"]+)");
-    private static final String BASE_URL = "e621.net/post/index.json?tags=sergal,order:random,rating:s&limit=1";
+    private static final String BASE_URL = "www.e621.net/post/index.json?tags=sergal,order:random,rating:s&limit=1";
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
