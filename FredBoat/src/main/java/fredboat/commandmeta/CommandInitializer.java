@@ -137,7 +137,7 @@ public class CommandInitializer {
         CommandRegistry.registerCommand(0x101, "cheese", new RemoteFileCommand("https://www.weasyl.com/%7Escritch/submissions/252410/ded7d1b47620a488bbebbae6402fcb5186dc6ee3c8b5704168beb43d80612f2a/scritch-ol-cheese-wedge-head.jpg"));
         CommandRegistry.registerCommand(0x101, "whats", new RemoteFileCommand("https://hastebin.com/raw/pafebusuni.txt"));
         CommandRegistry.registerCommand(0x101, "serg", new TextCommand("```The Sergal (サーガル Sāgaru), is a fictional alien species created by Mick39. They belong to the Eltus race, alongside the Nevrean and Agudner in the Vilous universe, a science-fantasy world created by Mick.```"));
-        CommandRegistry.registerCommand(0x101, "sergal", new RemoteFileCommand("http://orig08.deviantart.net/5ddf/f/2016/362/c/4/killthesergal_by_memyou-dat5xfh.png"));
+        CommandRegistry.registerCommand(0x101, "sergal", new SergalCommand());
         CommandRegistry.registerCommand(0x101, "ram", new RemoteFileCommand("http://i.imgur.com/jeGVLk3.jpg"));
         CommandRegistry.registerCommand(0x101, "welcome", new RemoteFileCommand("http://i.imgur.com/yjpmmBk.gif"));
         CommandRegistry.registerCommand(0x101, "rude", new RemoteFileCommand("http://i.imgur.com/pUn7ijx.png"));
