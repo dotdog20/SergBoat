@@ -42,7 +42,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SergalCommand extends Command {
+public class SergalsCommand extends Command {
 
     private static final Pattern IMAGE_PATTERN = Pattern.compile("\"file_url\":\"([^\"]+)");
     private static final String BASE_URL = "https://www.e621.net/post/index.json?tags=sergal,order:random,rating:s&limit=1/";
@@ -62,6 +62,7 @@ public class SergalCommand extends Command {
 
             File tmp = CacheUtil.getImageFromURL(BASE_URL + m.group(1));
             channel.sendFile(tmp, null).queue();
+            channel.sendMessage("||" + "||" + m).queue();
         } catch (UnirestException e) {
             channel.sendMessage("Failed to connect to " + BASE_URL).queue();
         } catch (IOException e) {

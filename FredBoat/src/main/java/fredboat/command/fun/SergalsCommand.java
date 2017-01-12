@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
 
 public class SergalsCommand extends Command {
 
-    private static final Pattern IMAGE_PATTERN = Pattern.compile("\"file_url\":\"([^\"+)");
+    private static final Pattern IMAGE_PATTERN = Pattern.compile("\"file_url\":\"([^\"]+)");
     private static final String BASE_URL = "https://www.e621.net/post/index.json?tags=sergal,order:random,rating:s&limit=1/";
 
     @Override
