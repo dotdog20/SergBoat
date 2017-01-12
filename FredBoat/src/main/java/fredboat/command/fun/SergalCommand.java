@@ -56,6 +56,7 @@ public class SergalCommand extends Command {
 
             if(!m.find()){
                 channel.sendMessage("Failed to extract image from " + BASE_URL).queue();
+                channel.sendMessage("INFO:" + str + m).queue();
                 return;
             }
 
