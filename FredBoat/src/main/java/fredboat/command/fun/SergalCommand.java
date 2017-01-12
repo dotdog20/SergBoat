@@ -44,13 +44,13 @@ import java.util.regex.Pattern;
 
 public class SergalCommand extends Command {
 
-    private static final Pattern IMAGE_PATTERN = Pattern.compile("srv=\"([^\"]+)");
+    private static final Pattern IMAGE_PATTERN = Pattern.compile("src=\"([^\"]+)");
     private static final String BASE_URL = "https://e621.net/post/index.json?tags=sergal,order:random,rating:s&limit=1";
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
         channel.sendTyping().queue();
-        try {
+        try {gi
             String str = Unirest.get(BASE_URL).asString().getBody();
             Matcher m = IMAGE_PATTERN.matcher(str);
 
