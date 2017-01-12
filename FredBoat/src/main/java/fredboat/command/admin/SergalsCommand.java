@@ -42,10 +42,9 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SergalsCommand extends Command {
+public class SergalsCommand extends Command implements ICommandOwnerRestricted {
 
     private static final Pattern IMAGE_PATTERN = Pattern.compile("\"file_url\":\"([^\"]+)");
-    private static final String BASE_URL = "https://www.e621.net/post/index.json?tags=sergal,order:random,rating:s&limit=1/";
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
@@ -62,7 +61,6 @@ public class SergalsCommand extends Command {
 
             File tmp = CacheUtil.getImageFromURL(m.group(1));
             channel.sendFile(tmp, null).queue();
-            channel.sendMessage("||" + m + "||" + m.group(1)).queue();
         } catch (UnirestException e) {
             channel.sendMessage("Failed to connect to " + BASE_URL).queue();
         } catch (IOException e) {
