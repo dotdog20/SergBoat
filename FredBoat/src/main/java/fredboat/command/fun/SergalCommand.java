@@ -50,7 +50,7 @@ public class SergalCommand extends Command {
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
         channel.sendTyping().queue();
-        try {gi
+        try {
             String str = Unirest.get(BASE_URL).asString().getBody();
             Matcher m = IMAGE_PATTERN.matcher(str);
 
