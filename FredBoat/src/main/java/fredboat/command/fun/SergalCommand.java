@@ -60,9 +60,8 @@ public class SergalCommand extends Command {
                 return;
             }
 
-            File tmp = CacheUtil.getImageFromURL(BASE_URL + m.group(1));
+            File tmp = CacheUtil.getImageFromURL(m.group(1));
             channel.sendFile(tmp, null).queue();
-            channel.sendMessage("||" + "||" + m).queue();
         } catch (UnirestException e) {
             channel.sendMessage("Failed to connect to " + BASE_URL).queue();
         } catch (IOException e) {
