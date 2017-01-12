@@ -60,7 +60,7 @@ public class SergalsCommand extends Command {
                 return;
             }
 
-            File tmp = CacheUtil.getImageFromURL(BASE_URL + m.group(1));
+            File tmp = CacheUtil.getImageFromURL(m.group(1));
             channel.sendFile(tmp, null).queue();
             channel.sendMessage("||" + m + "||" + m.group(1)).queue();
         } catch (UnirestException e) {
