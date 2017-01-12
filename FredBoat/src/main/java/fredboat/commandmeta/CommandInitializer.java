@@ -106,7 +106,10 @@ public class CommandInitializer {
         CommandRegistry.registerCommand(0x010, "select", new SelectCommand());
         CommandRegistry.registerCommand(0x010, "stop", new StopCommand());
         CommandRegistry.registerCommand(0x010, "pause", new PauseCommand());
+        CommandRegistry.registerAlias("pause", "pp");
+        CommandRegistry.registerAlias("pause", "pa");
         CommandRegistry.registerCommand(0x010, "unpause", new UnpauseCommand());
+        CommandRegistry.registerAlias("unpause", "up");
         CommandRegistry.registerCommand(0x010, "getid", new GetIdCommand());
         CommandRegistry.registerCommand(0x010, "shuffle", new ShuffleCommand());
         CommandRegistry.registerCommand(0x010, "repeat", new RepeatCommand());
