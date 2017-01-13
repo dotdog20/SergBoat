@@ -52,7 +52,7 @@ public class SergalCommand extends Command {
 
     private static final Logger log = LoggerFactory.getLogger(SergalCommand.class);
     private static final Pattern IMAGE_PATTERN = Pattern.compile("\"file_url\":\"([^\"]+)");
-    private static final String BASE_URL = "https://www.e621.net/post/index.json?tags=sergal,order:random,rating:s&limit=1/";
+    private static final String BASE_URL = "https://www.e621.net/post/index.json?tags=sergal,-spread_legs,-swimsuit,-nude,-breasts,-cuddling,order:random,rating:s&limit=1/";
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
