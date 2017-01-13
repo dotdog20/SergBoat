@@ -36,7 +36,6 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
-import fredboat.util.log.SimpleLogToSLF4JAdapter;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,7 +53,7 @@ public class SergalCommand extends Command {
         try {
             String str = Unirest.get(BASE_URL).asString().getBody();
             Matcher m = IMAGE_PATTERN.matcher(str);
-            log.info("IMG URL:");
+
 
             if(!m.find()){
                 channel.sendMessage("Failed to extract image from " + BASE_URL).queue();
