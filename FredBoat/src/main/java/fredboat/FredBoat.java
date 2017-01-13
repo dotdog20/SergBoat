@@ -79,7 +79,7 @@ public abstract class FredBoat {
     /* Config */
     private static JSONObject config = null;
     private static int scopes = 0;
-    public static int numShards = 2;
+    public static int numShards = 4;
     private static AtomicInteger numShardsReady = new AtomicInteger(0);
 
     /* Credentials */
