@@ -143,6 +143,7 @@ public class CommandInitializer {
         CommandRegistry.registerCommand(0x101, "sergal", new SergalCommand());
         CommandRegistry.registerCommand(0x101, "sergals", new SergalsCommand());
         CommandRegistry.registerCommand(0x101, "ram", new RemoteFileCommand("http://i.imgur.com/jeGVLk3.jpg"));
+        CommandRegistry.registerCommand(0x101, "fluff", new RemoteFileCommand("http://i.imgur.com/IqJSbgK.jpg"));
         CommandRegistry.registerCommand(0x101, "welcome", new RemoteFileCommand("http://i.imgur.com/yjpmmBk.gif"));
         CommandRegistry.registerCommand(0x101, "rude", new RemoteFileCommand("http://i.imgur.com/pUn7ijx.png"));
         CommandRegistry.registerCommand(0x101, "fuck", new RemoteFileCommand("http://i.imgur.com/1bllKNh.png"));
