@@ -53,7 +53,7 @@ public class SergalCommand extends Command {
         try {
             String str = Unirest.get(BASE_URL).asString().getBody();
             Matcher m = IMAGE_PATTERN.matcher(str);
-            log.info("IMG URL:" + m.group(1));
+            log.info("IMG URL:");
 
             if(!m.find()){
                 channel.sendMessage("Failed to extract image from " + BASE_URL).queue();
