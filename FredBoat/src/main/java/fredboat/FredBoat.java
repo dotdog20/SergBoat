@@ -131,9 +131,7 @@ public abstract class FredBoat {
         scanner.close();
 
         mashapeKey = credsjson.optString("mashapeKey");
-        clientToken = credsjson.optString(System.getenv("serverToken"));
-        log.info("||||||" + clientToken);
-        log.info(System.getenv("serverToken"));
+        clientToken = credsjson.optString("clientToken"));
         MALPassword = credsjson.optString("malPassword");
         carbonKey = credsjson.optString("carbonKey");
 
@@ -163,7 +161,7 @@ public abstract class FredBoat {
             distribution = DiscordUtil.isMainBot() ? DistributionEnum.MAIN : DistributionEnum.MUSIC;
         }
         accountToken = credsjson.getJSONObject("token").getString(distribution.getId());
-
+        log.info("|||||||||||||" + accountToken)
         log.info("Determined distribution: " + distribution);
 
         //Initialise event listeners
