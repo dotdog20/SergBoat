@@ -84,7 +84,7 @@ public class CommandInitializer {
         CommandRegistry.registerCommand(0x101, "catgirl", new CatgirlCommand());
         CommandRegistry.registerAlias("catgirl", "kittywoman");
         CommandRegistry.registerCommand(0x101, "shards", new ShardsCommand());
-        CommandRegistry.registerCommand(0x101, "snap", new RemoteFileCommand("https://app.snap-ci.com/dotdog20/SergBoat/branch/master/build_image.jpg"));
+        CommandRegistry.registerCommand(0x101, "snap", new RemoteFileCommand("https://app.snap-ci.com/dotdog20/SergBoat/branch/master/build_image.png"));
 
 
         /* Music commands */
@@ -138,7 +138,7 @@ public class CommandInitializer {
 
         /* Other Anime Discord, Sergi memes or any other memes */
 
-        CommandRegistry.registerCommand(0x101, "nevrean", new RemoteFileCommand("http://pre07.deviantart.net/7fed/th/pre/f/2016/264/6/e/nevrean_lady___nevrean_bounty_huntress_by_mick39-d6ocmwo.jpg"));
+        CommandRegistry.registerCommand(0x101, "nevrean", new NevreanCommand());
         CommandRegistry.registerCommand(0x101, "cheese", new RemoteFileCommand("https://www.weasyl.com/%7Escritch/submissions/252410/ded7d1b47620a488bbebbae6402fcb5186dc6ee3c8b5704168beb43d80612f2a/scritch-ol-cheese-wedge-head.jpg"));
         CommandRegistry.registerCommand(0x101, "whats", new RemoteFileCommand("https://hastebin.com/raw/pafebusuni.txt"));
         CommandRegistry.registerCommand(0x101, "serg", new TextCommand("```The Sergal (サーガル Sāgaru), is a fictional alien species created by Mick39. They belong to the Eltus race, alongside the Nevrean and Agudner in the Vilous universe, a science-fantasy world created by Mick.```"));

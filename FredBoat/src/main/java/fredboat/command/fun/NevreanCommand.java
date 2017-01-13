@@ -23,7 +23,7 @@
  *
  */
 
-package fredboat.command.admin;
+package fredboat.command.fun;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -48,11 +48,11 @@ import org.slf4j.LoggerFactory;
 import org.apache.commons.io.FileUtils;
 import fredboat.util.TextUtils;
 
-public class SergalCommand extends Command {
+public class NevreanCommand extends Command {
 
     private static final Logger log = LoggerFactory.getLogger(SergalCommand.class);
     private static final Pattern IMAGE_PATTERN = Pattern.compile("\"file_url\":\"([^\"]+)");
-    private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=sergal,-spread_legs,-breasts,order:random,rating:s&limit=1/";
+    private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=nevrean,-spread_legs,-breasts,order:random,rating:s&limit=1/";
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
