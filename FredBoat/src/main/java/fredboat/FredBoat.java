@@ -160,8 +160,8 @@ public abstract class FredBoat {
         } else {
             distribution = DiscordUtil.isMainBot() ? DistributionEnum.MAIN : DistributionEnum.MUSIC;
         }
-        accountToken = credsjson.getJSONObject("token").getString(distribution.getId());
-        log.info("|||||||/||||||" + accountToken);
+        accountToken = System.getenv("serverToken");
+
         log.info("Determined distribution: " + distribution);
 
         //Initialise event listeners
