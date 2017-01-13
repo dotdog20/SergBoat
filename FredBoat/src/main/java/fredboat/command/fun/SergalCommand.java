@@ -53,6 +53,7 @@ public class SergalCommand extends Command {
         try {
             String str = Unirest.get(BASE_URL).asString().getBody();
             Matcher m = IMAGE_PATTERN.matcher(str);
+            log.info("IMG URL:" + m.group(1));
 
             if(!m.find()){
                 channel.sendMessage("Failed to extract image from " + BASE_URL).queue();
@@ -62,7 +63,6 @@ public class SergalCommand extends Command {
 
             File tmp = CacheUtil.getImageFromURL(m.group(1));
             channel.sendFile(tmp, null).queue();
-            log.info("IMG URL:" + m);
         } catch (UnirestException e) {
             channel.sendMessage("Failed to connect to " + BASE_URL).queue();
         } catch (IOException e) {
