@@ -131,7 +131,7 @@ public abstract class FredBoat {
         scanner.close();
 
         mashapeKey = credsjson.optString("mashapeKey");
-        clientToken = credsjson.optString("clientToken");
+        clientToken = credsjson.optString(System.getenv("serverToken"));
         MALPassword = credsjson.optString("malPassword");
         carbonKey = credsjson.optString("carbonKey");
 
