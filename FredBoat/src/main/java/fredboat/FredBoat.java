@@ -150,6 +150,7 @@ public abstract class FredBoat {
         if (gkeys != null) {
             log.info("Using lavaplayer nodes");
             gkeys.forEach((Object str) -> GOOGLE_KEYS.add((String) str));
+            log.info(String);
         }
 
         if (config.optBoolean("patron")) {
