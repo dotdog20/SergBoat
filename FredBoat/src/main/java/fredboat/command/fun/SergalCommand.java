@@ -42,6 +42,10 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.apache.commons.io.FileUtils;
+
 public class SergalCommand extends Command {
 
     private static final Pattern IMAGE_PATTERN = Pattern.compile("\"file_url\":\"([^\"]+)");
