@@ -46,6 +46,7 @@ import fredboat.FredBoat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.io.FileUtils;
+import fredboat.util.TextUtils;
 
 public class SergalCommand extends Command {
 
