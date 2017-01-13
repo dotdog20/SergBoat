@@ -84,6 +84,8 @@ public class CommandInitializer {
         CommandRegistry.registerCommand(0x101, "catgirl", new CatgirlCommand());
         CommandRegistry.registerAlias("catgirl", "kittywoman");
         CommandRegistry.registerCommand(0x101, "shards", new ShardsCommand());
+        CommandRegistry.registerCommand(0x101, "snap", new RemoteFileCommand("https://app.snap-ci.com/dotdog20/SergBoat/branch/master/build_image"));
+
 
         /* Music commands */
         CommandRegistry.registerCommand(0x010, "mexit", new ExitCommand());
