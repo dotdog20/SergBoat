@@ -137,6 +137,7 @@ public class CommandInitializer {
         CommandRegistry.registerAlias("rewind", "r");
 
         /* Other Anime Discord, Sergi memes or any other memes */
+        CommandRegistry.registerCommand(0x101, "teemo", new RemoteFileCommand("http://orig06.deviantart.net/cc84/f/2012/218/b/f/teemo_render__default_skin__by_aurablade-d59zqef.png"));
 
         CommandRegistry.registerCommand(0x101, "nevrean", new NevreanCommand());
         CommandRegistry.registerCommand(0x101, "cheese", new RemoteFileCommand("https://www.weasyl.com/%7Escritch/submissions/252410/ded7d1b47620a488bbebbae6402fcb5186dc6ee3c8b5704168beb43d80612f2a/scritch-ol-cheese-wedge-head.jpg"));
