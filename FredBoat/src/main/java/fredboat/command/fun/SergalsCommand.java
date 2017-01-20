@@ -63,8 +63,8 @@ public class SergalsCommand extends Command implements ICommandOwnerRestricted {
             if(invoker.isUserBotCommander());
               File tmp = CacheUtil.getImageFromURL(m.group(1));
               channel.sendFile(tmp, null).queue();
-            else
-              channel.sendMessage("GIT-PUSH - 85f4hj5").queue();
+              else
+                channel.sendMessage("GIT-PUSH - 85f4hj5").queue();
         } catch (UnirestException e) {
             channel.sendMessage("Failed to connect to " + BASE_URL).queue();
         } catch (IOException e) {
