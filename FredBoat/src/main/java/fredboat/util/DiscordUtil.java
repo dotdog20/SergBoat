@@ -66,7 +66,7 @@ public class DiscordUtil {
         User other = jda.getUserById(BotConstants.MUSIC_BOT_ID);
         return other != null && guild.getMember(other) != null;
     }
-    
+
     public static boolean isPatronBotPresentAndOnline(Guild guild) {
         JDA jda = guild.getJDA();
         User other = jda.getUserById(BotConstants.PATRON_BOT_ID);
@@ -77,7 +77,7 @@ public class DiscordUtil {
         List<Role> roles = guild.getMember(user).getRoles();
 
         for (Role r : roles) {
-            if (r.getName().equals("Bot Commander")) {
+            if (r.getName().equals("Owner")) {
                 return true;
             }
         }
