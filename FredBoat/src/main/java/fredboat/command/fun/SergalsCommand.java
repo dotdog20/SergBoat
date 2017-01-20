@@ -51,7 +51,6 @@ public class SergalsCommand extends Command implements ICommandOwnerRestricted {
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
         channel.sendTyping().queue();
-
         try {
             String str = Unirest.get(BASE_URL).asString().getBody();
             Matcher m = IMAGE_PATTERN.matcher(str);
@@ -62,13 +61,8 @@ public class SergalsCommand extends Command implements ICommandOwnerRestricted {
                 return;
             }
 
-        List<Role> roles = guild.getMember(user).getRoles();
-        for (Role r : roles) {
-            if (r.getName().equals("Owner")) {
-              File tmp = CacheUtil.getImageFromURL(m.group(1));
-              channel.sendFile(tmp, null).queue();
-            }
-          }
+            File tmp = CacheUtil.getImageFromURL(m.group(1)).isUserBotCommander();
+            channel.sendFile(tmp, null).queue();
         } catch (UnirestException e) {
             channel.sendMessage("Failed to connect to " + BASE_URL).queue();
         } catch (IOException e) {
