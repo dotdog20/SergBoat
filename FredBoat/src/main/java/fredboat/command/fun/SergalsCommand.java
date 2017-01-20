@@ -61,7 +61,7 @@ public class SergalsCommand extends Command implements ICommandOwnerRestricted {
                 channel.sendMessage("INFO:" + str + m).queue();
                 return;
             }
-            if (invoker.isUserBotCommander()){
+            if (DiscordUtil.isUserBotCommander()){
               File tmp = CacheUtil.getImageFromURL(m.group(1));
               channel.sendFile(tmp, null).queue();
             }
