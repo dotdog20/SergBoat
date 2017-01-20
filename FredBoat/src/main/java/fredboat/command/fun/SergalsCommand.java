@@ -50,7 +50,7 @@ public class SergalsCommand extends Command implements ICommandOwnerRestricted {
     private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=sir_double-faggot,order:random,rating:s&limit=1/";
 
     @Override
-    public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
+    public void onInvoke(Guild guild, TextChannel channel, User invoker, Message message, String[] args) {
         channel.sendTyping().queue();
         try {
             String str = Unirest.get(BASE_URL).asString().getBody();
