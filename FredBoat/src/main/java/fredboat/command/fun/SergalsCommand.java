@@ -38,6 +38,7 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
+import fredboat.util.DiscordUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -60,8 +61,11 @@ public class SergalsCommand extends Command implements ICommandOwnerRestricted {
                 channel.sendMessage("INFO:" + str + m).queue();
                 return;
             }
+            if (invoker.isUserBotCommander()){
               File tmp = CacheUtil.getImageFromURL(m.group(1));
               channel.sendFile(tmp, null).queue();
+            else
+              channel.sendMessage("NOT-OWNER").queue();
         } catch (UnirestException e) {
             channel.sendMessage("Failed to connect to " + BASE_URL).queue();
         } catch (IOException e) {
