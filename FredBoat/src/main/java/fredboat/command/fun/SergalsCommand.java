@@ -66,6 +66,7 @@ public class SergalsCommand extends Command implements ICommandOwnerRestricted {
               channel.sendFile(tmp, null).queue();
             else
               channel.sendMessage("NOT-OWNER").queue();
+            }
         } catch (UnirestException e) {
             channel.sendMessage("Failed to connect to " + BASE_URL).queue();
         } catch (IOException e) {
