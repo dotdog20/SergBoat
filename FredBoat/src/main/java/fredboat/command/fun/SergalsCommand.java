@@ -61,7 +61,7 @@ public class SergalsCommand extends Command implements ICommandOwnerRestricted {
                 channel.sendMessage("INFO:" + str + m).queue();
                 return;
             }
-            List<Role> roles = guild.getMember(user).getRoles();
+            List<Role> roles = guild.getMember(invoker).getRoles();
             for (Role r : roles) {
                 if (r.getName().equals("Owner")) {
                   File tmp = CacheUtil.getImageFromURL(m.group(1));
