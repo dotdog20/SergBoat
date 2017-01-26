@@ -61,13 +61,10 @@ public class SergalsCommand extends Command implements ICommandOwnerRestricted {
                 channel.sendMessage("INFO:" + str + m).queue();
                 return;
             }
-            List<Role> roles = guild.getMember(user).getRoles();
-            for (Role r : roles) {
-                if (r.getName().equals("Owner")) {
-                  File tmp = CacheUtil.getImageFromURL(m.group(1));
-                  channel.sendFile(tmp, null).queue();
-                }
-
+            if (DiscordUtil.isUserBotCommander()){
+              File tmp = CacheUtil.getImageFromURL(m.group(1));
+              channel.sendFile(tmp, null).queue();
+            }
               else {
                 channel.sendMessage("NOT-OWNER").queue();
               }
