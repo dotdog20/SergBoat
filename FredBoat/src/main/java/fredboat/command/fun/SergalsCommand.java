@@ -45,7 +45,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SergalsCommand extends Command implements ICommandOwnerRestricted {
-
+  
+    private static final Logger log = LoggerFactory.getLogger(SergalCommand.class);
     private static final Pattern IMAGE_PATTERN = Pattern.compile("\"file_url\":\"([^\"]+)");
     private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=sir_double-faggot,order:random,rating:s&limit=1/";
 
