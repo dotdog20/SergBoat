@@ -56,20 +56,16 @@ public class SergalsCommand extends Command implements ICommandOwnerRestricted {
             String str = Unirest.get(BASE_URL).asString().getBody();
             Matcher m = IMAGE_PATTERN.matcher(str);
 
+
             if(!m.find()){
                 channel.sendMessage("Failed to extract image from " + BASE_URL).queue();
                 channel.sendMessage("INFO:" + str + m).queue();
                 return;
             }
-            if (DiscordUtil.isUserBotCommander()){
-              File tmp = CacheUtil.getImageFromURL(m.group(1));
-              channel.sendFile(tmp, null).queue();
-            }
-              else {
-                channel.sendMessage("NOT-OWNER").queue();
-              }
 
-
+            File tmp = CacheUtil.getImageFromURL(m.group(1));
+            channel.sendFile(tmp, null).queue();
+            log.info("IMG URL:" + m.group(1));
         } catch (UnirestException e) {
             channel.sendMessage("Failed to connect to " + BASE_URL).queue();
         } catch (IOException e) {
