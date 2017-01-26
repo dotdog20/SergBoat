@@ -44,8 +44,14 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fredboat.FredBoat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.apache.commons.io.FileUtils;
+import fredboat.util.TextUtils;
+
 public class SergalsCommand extends Command implements ICommandOwnerRestricted {
-  
+
     private static final Logger log = LoggerFactory.getLogger(SergalCommand.class);
     private static final Pattern IMAGE_PATTERN = Pattern.compile("\"file_url\":\"([^\"]+)");
     private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=sir_double-faggot,order:random,rating:s&limit=1/";
