@@ -73,8 +73,8 @@ public class DiscordUtil {
         return other != null && guild.getMember(other) != null && guild.getMember(other).getOnlineStatus() == OnlineStatus.ONLINE;
     }
 
-    public static boolean isUserBotCommander(Guild guild, Member invoker) {
-        List<Role> roles = guild.getMember(invoker).getRoles();
+    public static boolean isUserBotCommander(Guild guild, User user) {
+        List<Role> roles = guild.getMember(user).getRoles();
 
         for (Role r : roles) {
             if (r.getName().equals("Owner")) {
