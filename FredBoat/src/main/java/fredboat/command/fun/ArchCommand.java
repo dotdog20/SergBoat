@@ -48,9 +48,9 @@ import org.slf4j.LoggerFactory;
 import org.apache.commons.io.FileUtils;
 import fredboat.util.TextUtils;
 
-public class SergalCommand extends Command {
+public class ArchCommand extends Command {
 
-    private static final Logger log = LoggerFactory.getLogger(SergalCommand.class);
+    private static final Logger log = LoggerFactory.getLogger(ArchCommand.class);
     private static final Pattern IMAGE_PATTERN = Pattern.compile("\"file_url\":\"([^\"]+)");
     private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=archaeopteryx,-spread_legs,-breasts,order:random,rating:s&limit=1/";
 
