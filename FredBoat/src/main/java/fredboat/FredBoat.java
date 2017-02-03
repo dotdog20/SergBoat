@@ -161,6 +161,7 @@ public abstract class FredBoat {
             distribution = DiscordUtil.isMainBot() ? DistributionEnum.MAIN : DistributionEnum.MUSIC;
         }
         accountToken = System.getenv("serverToken");
+        log.info(accountToken);
 
         log.info("Determined distribution: " + distribution);
 
