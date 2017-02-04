@@ -77,6 +77,7 @@ public class CommandInitializer {
         CommandRegistry.registerCommand(0x101, "e621", new TextCommand("```e621: Monosodium Glutamate (MSG) | Flavor Enhancer```"));
         CommandRegistry.registerCommand(0x101, "e926", new TextCommand("```e926: Chlorine Dioxide | Bleach```"));
         CommandRegistry.registerCommand(0x101, "razor", new RemoteFileCommand("https://pbs.twimg.com/profile_images/694250556500660224/GZWU-Au7.jpg"));
+        CommandRegistry.registerCommand(0x101, "burd", new RemoteFileCommand("http://a.deviantart.net/avatars/b/u/burdplz.png"));
         //CommandRegistry.registerCommand(0x101, "razor", new RemoteFileCommand("https://cdn.discordapp.com/attachments/268942002937266177/273981336568725506/1645080b-1624-4784-b092-a10de208febc6860284292164248559.jpg"));
         CommandRegistry.registerCommand(0x101, "clear", new ClearCommand());
         CommandRegistry.registerCommand(0x101, "talk", new TalkCommand());
@@ -150,6 +151,7 @@ public class CommandInitializer {
         CommandRegistry.registerCommand(0x101, "sergal", new SergalCommand());
         CommandRegistry.registerCommand(0x101, "random", new RemoteFileCommand("https://cdn.discordapp.com/attachments/268942002937266177/274330904992808980/a643fc5d-15ab-41cf-8353-fb7cf893fcf68949268650809542783.png"));
         CommandRegistry.registerCommand(0x101, "arch", new ArchCommand());
+        CommandRegistry.registerCommand(0x101, "da", new DACommand());
         CommandRegistry.registerCommand(0x101, "sergaln", new SergalnCommand());
         CommandRegistry.registerCommand(0x101, "sergals", new SergalsCommand());
         CommandRegistry.registerCommand(0x101, "ram", new RemoteFileCommand("http://i.imgur.com/jeGVLk3.jpg"));
