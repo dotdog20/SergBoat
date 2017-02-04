@@ -44,12 +44,19 @@ import java.util.regex.Pattern;
 
 public class DACommand extends Command {
 
-    private static final Pattern IMAGE_PATTERN = Pattern.compile("src=\"([^\"]+)");
     private static final String BASE_URL = "http://a.deviantart.net/avatars/b/u/";
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
         channel.sendMessage(args[1]).queue();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(BASE_URL);
+        stringBuilder.append(args[1]);
+        stringBuilder.append(".png");
+        String finalString = stringBuilder.toString();
+        channel.sendMessage(finalString).queue();
+
 
       }
 }
