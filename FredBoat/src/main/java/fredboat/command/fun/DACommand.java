@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
 public class DACommand extends Command {
 
     private static final Pattern IMAGE_PATTERN = Pattern.compile("src=\"([^\"]+)");
-    private static final String BASE_URL = "http://a.deviantart.net/avatars/b/u/";``
+    private static final String BASE_URL = "http://a.deviantart.net/avatars/b/u/";
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
