@@ -49,7 +49,7 @@ public class DACommand extends Command {
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
-        channel.sendMessage(args).queue();
+        channel.sendMessage(args[1]).queue();
 
       }
 }
