@@ -55,7 +55,9 @@ public class DACommand extends Command {
         stringBuilder.append(args[1]);
         stringBuilder.append(".png");
         String finalString = stringBuilder.toString();
-        channel.sendMessage(finalString).queue();
+        //channel.sendMessage(finalString).queue();
+        File tmp = CacheUtil.getImageFromURL(finalString
+        channel.sendFile(tmp, null).queue(););
 
 
       }
