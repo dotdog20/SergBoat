@@ -60,7 +60,7 @@ public class DACommand extends Command {
 
 
 
-     catch (UnirestException e) {
+    } catch (UnirestException e) {
         channel.sendMessage("Failed to connect to " + BASE_URL).queue();
     } catch (IOException e) {
         throw new RuntimeException(e);
