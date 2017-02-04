@@ -42,10 +42,10 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CatgirlCommand extends Command {
+public class DACommand extends Command {
 
     private static final Pattern IMAGE_PATTERN = Pattern.compile("src=\"([^\"]+)");
-    private static final String BASE_URL = "http://catgirls.brussell98.tk/";
+    private static final String BASE_URL = "http://a.deviantart.net/avatars/b/u/";
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
