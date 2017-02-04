@@ -76,7 +76,8 @@ public class CommandInitializer {
         CommandRegistry.registerCommand(0x101, "useless", new TextCommand("This command is useless."));
         CommandRegistry.registerCommand(0x101, "e621", new TextCommand("```e621: Monosodium Glutamate (MSG) | Flavor Enhancer```"));
         CommandRegistry.registerCommand(0x101, "e926", new TextCommand("```e926: Chlorine Dioxide | Bleach```"));
-        CommandRegistry.registerCommand(0x101, "razor", new RemoteFileCommand("https://cdn.discordapp.com/attachments/268942002937266177/273981336568725506/1645080b-1624-4784-b092-a10de208febc6860284292164248559.jpg"));
+        CommandRegistry.registerCommand(0x101, "razor", new RemoteFileCommand("https://pbs.twimg.com/profile_images/694250556500660224/GZWU-Au7.jpg"));
+        //CommandRegistry.registerCommand(0x101, "razor", new RemoteFileCommand("https://cdn.discordapp.com/attachments/268942002937266177/273981336568725506/1645080b-1624-4784-b092-a10de208febc6860284292164248559.jpg"));
         CommandRegistry.registerCommand(0x101, "clear", new ClearCommand());
         CommandRegistry.registerCommand(0x101, "talk", new TalkCommand());
         CommandRegistry.registerCommand(0x101, "dump", new DumpCommand());
