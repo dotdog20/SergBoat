@@ -51,4 +51,5 @@ public class DACommand extends Command {
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
         channel.sendMessage(message).queue();
 
+      }
 }
