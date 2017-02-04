@@ -48,8 +48,7 @@ public class DACommand extends Command {
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
-        channel.sendMessage(args[1]).queue();
-
+      try{
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(BASE_URL);
         stringBuilder.append(args[1]);
@@ -67,3 +66,4 @@ public class DACommand extends Command {
         throw new RuntimeException(e);
       }
     }
+  }
