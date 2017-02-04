@@ -71,6 +71,8 @@ public class SergalCommand extends Command {
             File tmp = CacheUtil.getImageFromURL(m.group(1));
             channel.sendFile(tmp, null).queue();
             log.info("IMG URL:" + m.group(1));
+        } catch (UnirestException e) {
+            channel.sendMessage("Failed to connect to " + BASE_URL).queue();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

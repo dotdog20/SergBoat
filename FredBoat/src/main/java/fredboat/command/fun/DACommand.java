@@ -58,10 +58,6 @@ public class DACommand extends Command {
         File tmp = CacheUtil.getImageFromURL(finalString);
         channel.sendFile(tmp, null).queue();
 
-
-
-    } catch (UnirestException e) {
-        channel.sendMessage("Failed to connect to " + BASE_URL).queue();
     } catch (IOException e) {
         throw new RuntimeException(e);
       }
