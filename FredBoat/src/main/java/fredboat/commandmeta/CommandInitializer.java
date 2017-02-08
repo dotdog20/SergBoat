@@ -154,6 +154,7 @@ public class CommandInitializer {
         CommandRegistry.registerCommand(0x101, "da", new DACommand());
         CommandRegistry.registerCommand(0x101, "sergaln", new SergalnCommand());
         CommandRegistry.registerCommand(0x101, "sergals", new SergalsCommand());
+        CommandRegistry.registerCommand(0x101, "e6", new E6Command());
         CommandRegistry.registerCommand(0x101, "potoo", new PotooCommand());
         CommandRegistry.registerCommand(0x101, "ram", new RemoteFileCommand("http://i.imgur.com/jeGVLk3.jpg"));
         CommandRegistry.registerCommand(0x101, "fluff", new RemoteFileCommand("http://i.imgur.com/IqJSbgK.jpg"));
