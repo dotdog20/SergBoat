@@ -42,6 +42,12 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fredboat.FredBoat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.apache.commons.io.FileUtils;
+import fredboat.util.TextUtils;
+
 public class E6Command extends Command {
 
     private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=-spread_legs,-breasts,order:random,rating:s,limit=1,";
@@ -58,6 +64,7 @@ public class E6Command extends Command {
         //channel.sendMessage(finalString).queue();
         //File tmp = CacheUtil.getImageFromURL(finalString);
         //channel.sendFile(tmp, null).queue();
+        log.info(finalString);
       } catch (Exception e) {
           channel.sendMessage("Failed to connect to " + BASE_URL).queue();
       }
