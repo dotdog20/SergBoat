@@ -51,6 +51,7 @@ import fredboat.util.TextUtils;
 public class E6Command extends Command {
 
     private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=-spread_legs,-breasts,order:random,rating:s,limit=1,";
+    private static final Logger log = LoggerFactory.getLogger(E6Command.class);
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
