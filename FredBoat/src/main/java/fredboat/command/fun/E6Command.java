@@ -65,9 +65,12 @@ public class E6Command extends Command {
         //channel.sendMessage(finalString).queue();
         //File tmp = CacheUtil.getImageFromURL(finalString);
         //channel.sendFile(tmp, null).queue();
+
+        String str = Unirest.get(BASE_URL).asString().getBody();
+        Matcher m = IMAGE_PATTERN.matcher(str);
         File tmp = CacheUtil.getImageFromURL(m.group(1));
         channel.sendFile(tmp, null).queue();
-        log.info("IMG URL:" + m.group(1));
+        //
         log.info("E6: " + finalString);
       } catch (Exception e) {
           channel.sendMessage("Failed to connect to " + BASE_URL).queue();
