@@ -54,7 +54,7 @@ public class PotooCommand extends Command implements ICommandOwnerRestricted {
 
     private static final Logger log = LoggerFactory.getLogger(SergalCommand.class);
     private static final Pattern IMAGE_PATTERN = Pattern.compile("\"file_url\":\"([^\"]+)");
-    private static final String BASE_URL = "https://www.e621.net/post/index.json?tags=potoo,order:random,rating:e&limit=1/";
+    private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=potoo,order:random,rating:s&limit=1/";
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
