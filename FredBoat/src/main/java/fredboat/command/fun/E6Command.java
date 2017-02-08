@@ -59,8 +59,6 @@ public class E6Command extends Command {
         //File tmp = CacheUtil.getImageFromURL(finalString);
         //channel.sendFile(tmp, null).queue();
 
-    } catch (IOException e) {
-        throw new RuntimeException(e);
       }
     }
   }
