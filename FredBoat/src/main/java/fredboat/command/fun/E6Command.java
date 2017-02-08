@@ -61,6 +61,7 @@ public class E6Command extends Command {
         stringBuilder.append(BASE_URL);
         stringBuilder.append(args[1]);
         stringBuilder.append("&limit=1");
+        log.info(args[1]);
         String finalString = stringBuilder.toString();
         channel.sendMessage(finalString);
         //channel.sendMessage(finalString).queue();
@@ -70,6 +71,7 @@ public class E6Command extends Command {
         String str = Unirest.get(finalString).asString().getBody();
         Matcher m = IMAGE_PATTERN.matcher(str);
         File tmp = CacheUtil.getImageFromURL(m.group(1));
+        log.info(m);
         channel.sendFile(tmp, null).queue();
         //
         log.info("E6: " + finalString);
