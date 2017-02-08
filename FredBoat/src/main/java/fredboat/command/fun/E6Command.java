@@ -67,7 +67,7 @@ public class E6Command extends Command {
         //File tmp = CacheUtil.getImageFromURL(finalString);
         //channel.sendFile(tmp, null).queue();
 
-        String str = Unirest.get(BASE_URL).asString().getBody();
+        String str = Unirest.get(finalString).asString().getBody();
         Matcher m = IMAGE_PATTERN.matcher(str);
         File tmp = CacheUtil.getImageFromURL(m.group(1));
         channel.sendFile(tmp, null).queue();
