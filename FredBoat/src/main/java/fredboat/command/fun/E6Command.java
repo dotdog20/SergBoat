@@ -52,6 +52,7 @@ public class E6Command extends Command {
 
     private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=-spread_legs,-breasts,order:random,rating:s,";
     private static final Logger log = LoggerFactory.getLogger(E6Command.class);
+    private static final Pattern IMAGE_PATTERN = Pattern.compile("\"file_url\":\"([^\"]+)");
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
