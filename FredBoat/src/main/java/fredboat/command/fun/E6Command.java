@@ -76,7 +76,7 @@ public class E6Command extends Command {
         //
         log.info("E6: " + finalString);
       } catch (Exception e) {
-          channel.sendMessage("Failed to connect to " + str).queue();
+          channel.sendMessage("Failed to connect to").queue();
       }
     }
   }
