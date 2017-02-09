@@ -68,11 +68,11 @@ public class E6Command extends Command {
         //File tmp = CacheUtil.getImageFromURL(finalString);
         //channel.sendFile(tmp, null).queue();
 
-        String str = Unirest.get(finalString).asString().getBody();
-        Matcher m = IMAGE_PATTERN.matcher(str);
-        File tmp = CacheUtil.getImageFromURL(m.group(1));
+        //String str = Unirest.get(finalString).asString().getBody();
+        //Matcher m = IMAGE_PATTERN.matcher(str);
+        //File tmp = CacheUtil.getImageFromURL(m.group(1));
         //log.info(m);
-        channel.sendFile(tmp, null).queue();
+        //channel.sendFile(tmp, null).queue();
         //
         log.info("E6: " + finalString);
       } catch (Exception e) {
