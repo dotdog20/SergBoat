@@ -64,17 +64,16 @@ public class E6Command extends Command {
         log.info(args[1]);
         String finalString = stringBuilder.toString();
         channel.sendMessage(finalString);
-        //channel.sendMessage(finalString).queue();
-        //File tmp = CacheUtil.getImageFromURL(finalString);
-        //channel.sendFile(tmp, null).queue();
 
-        //String str = Unirest.get(finalString).asString().getBody();
-        //Matcher m = IMAGE_PATTERN.matcher(str);
-        //File tmp = CacheUtil.getImageFromURL(m.group(1));
-        //log.info(m);
-        //channel.sendFile(tmp, null).queue();
-        //
+        String str = Unirest.get(finalString).asString().getBody();
+        Matcher m = IMAGE_PATTERN.matcher(str);
+        File tmp = CacheUtil.getImageFromURL(m.group(1));
+        log.info(m);
+        channel.sendFile(tmp, null).queue();
+
         log.info("E6: " + finalString);
+      } catch (UnirestException e) {
+          channel.sendMessage("Failed to connect to " + BASE_URL).queue();
       } catch (Exception e) {
           channel.sendMessage("Failed to connect to").queue();
       }
