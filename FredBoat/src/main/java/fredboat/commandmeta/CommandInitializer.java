@@ -145,6 +145,11 @@ public class CommandInitializer {
         CommandRegistry.registerCommand(0x101, "teemo", new RemoteFileCommand("http://orig06.deviantart.net/cc84/f/2012/218/b/f/teemo_render__default_skin__by_aurablade-d59zqef.png"));
 
         CommandRegistry.registerCommand(0x101, "nevrean", new NevreanCommand());
+
+        CommandRegistry.registerCommand(0x101, "religion", new RemoteFileCommand("http://i0.kym-cdn.com/photos/images/original/001/221/803/543.jpg"));
+        CommandRegistry.registerCommand(0x101, "same", new RemoteFileCommand("http://i1.kym-cdn.com/photos/images/original/001/223/056/8ee.gif"));
+        CommandRegistry.registerCommand(0x101, "dove", new RemoteFileCommand("http://i3.kym-cdn.com/photos/images/original/001/221/963/30d.gif"));
+
         CommandRegistry.registerCommand(0x101, "cheese", new RemoteFileCommand("https://www.weasyl.com/%7Escritch/submissions/252410/ded7d1b47620a488bbebbae6402fcb5186dc6ee3c8b5704168beb43d80612f2a/scritch-ol-cheese-wedge-head.jpg"));
         CommandRegistry.registerCommand(0x101, "whats", new RemoteFileCommand("https://hastebin.com/raw/pafebusuni.txt"));
         CommandRegistry.registerCommand(0x101, "serg", new TextCommand("```The Sergal (サーガル Sāgaru), is a fictional alien species created by Mick39. They belong to the Eltus race, alongside the Nevrean and Agudner in the Vilous universe, a science-fantasy world created by Mick.```"));
