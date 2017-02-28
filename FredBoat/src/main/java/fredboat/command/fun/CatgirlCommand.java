@@ -45,13 +45,13 @@ import java.util.regex.Pattern;
 public class CatgirlCommand extends Command {
 
     private static final Pattern IMAGE_PATTERN = Pattern.compile("src=\"([^\"]+)");
-    private static final String BASE_URL = "http://catgirls.brussell98.tk/";
+    private static final String BASE_URL = "https://catgirls.brussell98.tk/";
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
         channel.sendTyping().queue();
         try {
-            String str = Unirest.get(BASE_URL).asString().getDiv();
+            String str = Unirest.get(BASE_URL).asString().getBody();
             Matcher m = IMAGE_PATTERN.matcher(str);
 
             if(!m.find()){
