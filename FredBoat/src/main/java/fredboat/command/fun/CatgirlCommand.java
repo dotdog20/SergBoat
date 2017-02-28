@@ -51,7 +51,7 @@ public class CatgirlCommand extends Command {
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
         channel.sendTyping().queue();
         try {
-            String str = Unirest.get(BASE_URL).asString().getBody();
+            String str = Unirest.get(BASE_URL).asString().getDiv();
             Matcher m = IMAGE_PATTERN.matcher(str);
 
             if(!m.find()){
