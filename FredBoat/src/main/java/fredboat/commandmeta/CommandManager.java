@@ -27,7 +27,7 @@ package fredboat.commandmeta;
 
 import fredboat.FredBoat;
 import fredboat.commandmeta.abs.*;
-import fredboat.command.fun.RemoteFileCommand;
+import fredboat.command.fun.*;
 import fredboat.util.*;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
@@ -88,7 +88,7 @@ public class CommandManager {
           return;
         }
         if (invoked instanceof SergalCommand && guild.getId().equals("320237845254111234")) {
-          channel.sendMessage(invoker.getEffectiveName() + "is Disabled.").queue();
+          channel.sendMessage("Vlad Says: \"" + invoker.getEffectiveName() + "is disabled.\"").queue();
           return;
         }
         //Hardcode music commands in FredBoatHangout. Blacklist any channel that isn't #general or #staff, but whitelist Frederikam
