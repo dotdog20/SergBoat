@@ -58,3 +58,4 @@ public class FLeaveCommand extends Command implements ICommandOwnerRestricted {
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
             guild.getID().leave();
           }
+}
