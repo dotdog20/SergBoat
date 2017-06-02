@@ -87,7 +87,7 @@ public class CommandManager {
           channel.sendMessage(invoker.getEffectiveName() + "is Disabled.").queue();
           return;
         }
-        if (invoked instanceof SergalCommand && guild.getId().equals("320237845254111234")) {
+        if (invoked instanceof fredboat.command.fun.* && guild.getId().equals("320237845254111234")) {
           channel.sendMessage("Vlad Says: \"" + invoker.getEffectiveName() + " is disabled.\"").queue();
           return;
         }
