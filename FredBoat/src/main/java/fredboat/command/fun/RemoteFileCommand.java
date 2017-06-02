@@ -44,6 +44,8 @@ public class RemoteFileCommand extends Command {
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
+      if(guild = 320237845254111234){
+      }
         try {
             channel.sendFile(CacheUtil.getImageFromURL(msg), null).queue();
         } catch (IOException e) {
