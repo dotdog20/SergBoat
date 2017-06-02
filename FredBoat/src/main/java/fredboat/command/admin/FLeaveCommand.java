@@ -37,8 +37,6 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
 
-
-import net.dv8tion.jda.client.requests.restaction.pagination.MentionPaginationAction;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.Region;
 import net.dv8tion.jda.core.managers.AudioManager;
@@ -46,7 +44,6 @@ import net.dv8tion.jda.core.managers.GuildController;
 import net.dv8tion.jda.core.managers.GuildManager;
 import net.dv8tion.jda.core.managers.GuildManagerUpdatable;
 import net.dv8tion.jda.core.requests.RestAction;
-import net.dv8tion.jda.core.requests.restaction.pagination.AuditLogPaginationAction;
 
 import java.util.Collection;
 import java.util.List;
@@ -60,8 +57,7 @@ public class FLeaveCommand extends Command implements ICommandOwnerRestricted {
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
         if (invoker.getUser().getId().equals(BotConstants.OWNER_ID)) {
-            channel.sendMessage(TextUtils.prefaceWithName(invoker, " goodbye!!")).queue();
-            leave();
+            guild.leave();
         } else {
             channel.sendMessage(TextUtils.prefaceWithName(invoker, " you are not allowed to use that command!")).queue();
         }
