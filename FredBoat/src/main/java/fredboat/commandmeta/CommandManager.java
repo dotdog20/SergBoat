@@ -83,7 +83,7 @@ public class CommandManager {
         }
 
         if (invoked instanceof IMusicCommand && guild.getId().equals("320237845254111234")) {
-          channel.sendMessage(invoker.getEffectiveName() + "is Disabled.").queue();
+          channel.sendMessage(invoker.getEffectiveName() + "//").queue();
           return;
         }
         //Hardcode music commands in FredBoatHangout. Blacklist any channel that isn't #general or #staff, but whitelist Frederikam
