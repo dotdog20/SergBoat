@@ -56,11 +56,5 @@ public class FLeaveCommand extends Command implements ICommandOwnerRestricted {
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
-        if (invoker.getUser().getId().equals(BotConstants.OWNER_ID)) {
             guild.getID().leave();
-        } else {
-            channel.sendMessage(TextUtils.prefaceWithName(invoker, " you are not allowed to use that command!")).queue();
-        }
-    }
-
-}
+          }
