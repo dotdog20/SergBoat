@@ -88,7 +88,7 @@ public class CommandManager {
           return;
         }
         if (invoked instanceof SergalCommand && guild.getId().equals("320237845254111234")) {
-          channel.sendMessage("\" " + invoker.getEffectiveName() + " is disabled.\" - Vlad, " + get(Calendar.YEAR)).queue();
+          channel.sendMessage("\" " + invoker.getEffectiveName() + " is disabled.\" - Vlad, 2017").queue();
           return;
         }
         //Hardcode music commands in FredBoatHangout. Blacklist any channel that isn't #general or #staff, but whitelist Frederikam
