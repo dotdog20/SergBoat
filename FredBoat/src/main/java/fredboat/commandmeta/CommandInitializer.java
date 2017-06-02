@@ -47,6 +47,7 @@ import fredboat.command.util.*;
 public class CommandInitializer {
 
     public static void initCommands() {
+        CommandRegistry.registerCommand(0x111, "leave", new LeaveCommand());
         CommandRegistry.registerCommand(0x110, "help", new HelpCommand());
         CommandRegistry.registerAlias("help", "info");
         CommandRegistry.registerCommand(0x101, "version", new VersionCommand());
