@@ -137,9 +137,11 @@ public class CommandInitializer {
         CommandRegistry.registerCommand(0x010, "forward", new ForwardCommand());
         CommandRegistry.registerAlias("forward", "fwd");
         CommandRegistry.registerAlias("forward", "f");
+        CommandRegistry.registerAlias("forward", "ff");
         CommandRegistry.registerCommand(0x010, "rewind", new RewindCommand());
         CommandRegistry.registerAlias("rewind", "rew");
         CommandRegistry.registerAlias("rewind", "r");
+        CommandRegistry.registerAlias("rewind", "rr");
 
         /* Other Anime Discord, Sergi memes or any other memes */
         CommandRegistry.registerCommand(0x101, "teemo", new RemoteFileCommand("http://orig06.deviantart.net/cc84/f/2012/218/b/f/teemo_render__default_skin__by_aurablade-d59zqef.png"));
