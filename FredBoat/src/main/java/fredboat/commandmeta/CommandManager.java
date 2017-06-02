@@ -27,6 +27,7 @@ package fredboat.commandmeta;
 
 import fredboat.FredBoat;
 import fredboat.commandmeta.abs.*;
+import fredboat.command.fun.RemoteFileCommand;
 import fredboat.util.*;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
