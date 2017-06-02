@@ -36,6 +36,21 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
+
+
+import net.dv8tion.jda.client.requests.restaction.pagination.MentionPaginationAction;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.Region;
+import net.dv8tion.jda.core.managers.AudioManager;
+import net.dv8tion.jda.core.managers.GuildController;
+import net.dv8tion.jda.core.managers.GuildManager;
+import net.dv8tion.jda.core.managers.GuildManagerUpdatable;
+import net.dv8tion.jda.core.requests.RestAction;
+import net.dv8tion.jda.core.requests.restaction.pagination.AuditLogPaginationAction;
+
+import java.util.Collection;
+import java.util.List;
+
 /**
  *
  * @author frederik
