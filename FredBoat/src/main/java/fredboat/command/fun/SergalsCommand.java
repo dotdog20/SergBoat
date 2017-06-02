@@ -37,6 +37,7 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
+import fredboat.commandmeta.abs.ICommandDisabled;
 
 import fredboat.util.DiscordUtil;
 import java.io.File;
