@@ -84,7 +84,7 @@ public class CommandManager {
         }
 
         if (invoked instanceof RemoteFileCommand && guild.getId().equals("320237845254111234")) {
-          channel.sendMessage(invoker.getEffectiveName() + "is Disabled.").queue();
+          channel.sendMessage(invoker.getEffectiveName() + " is Disabled.").queue();
           return;
         }
         if (invoked instanceof SergalCommand && guild.getId().equals("320237845254111234")) {

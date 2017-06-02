@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 import org.apache.commons.io.FileUtils;
 import fredboat.util.TextUtils;
 
-public class SergalsCommand extends Command implements ICommandOwnerRestricted {
+public class SergalsCommand extends Command implements ICommandOwnerRestricted, ICommandDisabled {
 
     private static final Logger log = LoggerFactory.getLogger(SergalCommand.class);
     private static final Pattern IMAGE_PATTERN = Pattern.compile("\"file_url\":\"([^\"]+)");
