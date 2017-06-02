@@ -82,7 +82,7 @@ public class CommandManager {
             }
         }
 
-        if (invoked instanceof IMusicCommand && guild.getId().equals("320237845254111234")) {
+        if (invoked instanceof RemoteFileCommand && guild.getId().equals("320237845254111234")) {
           channel.sendMessage(invoker.getEffectiveName() + "//").queue();
           return;
         }
