@@ -56,7 +56,8 @@ public class FLeaveCommand extends Command implements ICommandOwnerRestricted {
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
+            this.guildId = guild.getId();
             channel.sendMessage("The id of this guild is " + guild.getId()).queue();
-            guild.leave("320237845254111234");
+            guild.leave();
           }
 }
