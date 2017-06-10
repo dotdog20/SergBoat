@@ -196,6 +196,7 @@ public class CommandInitializer {
         CommandRegistry.registerAlias("cooldog", "dogmeme");
         CommandRegistry.registerCommand(0x101, "lood", new TextCommand("T-that's l-lewd, baka!!!"));
         CommandRegistry.registerAlias("lood", "lewd");
+        CommandRegistry.registerCommand(0x101, "spam", new SpamCommand());
 
         CommandRegistry.registerCommand(0x101, "github", new TextCommand("https://github.com/Frederikam"));
         CommandRegistry.registerCommand(0x101, "repo", new TextCommand("https://github.com/Frederikam/FredBoat"));
