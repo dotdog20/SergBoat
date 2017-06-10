@@ -40,6 +40,7 @@ public class SpamCommand extends Command implements IMusicCommand {
         player.setCurrentTC(channel);
         try {
             player.joinChannel(vc);
+            Thread.sleep(100);
             player.setCurrentTC(channel);
             player.leaveVoiceChannelRequest(channel, false);
             player.joinChannel(vc);
