@@ -64,7 +64,7 @@ public class FirlCommand extends Command {
 
             if(!m.find()){
                 channel.sendMessage("Failed to extract image from " + BASE_URL).queue();
-                channel.sendMessage("INFO:" + str + m).queue();
+                channel.sendMessage("INFO: " + str + " " + m).queue();
                 return;
             }
 
