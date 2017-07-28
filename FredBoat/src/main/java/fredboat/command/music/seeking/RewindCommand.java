@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,29 +26,38 @@
 package fredboat.command.music.seeking;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import fredboat.Config;
 import fredboat.audio.GuildPlayer;
 import fredboat.audio.PlayerRegistry;
+import fredboat.audio.queue.AudioTrackContext;
+import fredboat.command.util.HelpCommand;
 import fredboat.commandmeta.abs.Command;
+import fredboat.commandmeta.abs.ICommandRestricted;
 import fredboat.commandmeta.abs.IMusicCommand;
+import fredboat.feature.I18n;
+import fredboat.perms.PermissionLevel;
 import fredboat.util.TextUtils;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
-public class RewindCommand extends Command implements IMusicCommand {
+import java.text.MessageFormat;
+
+public class RewindCommand extends Command implements IMusicCommand, ICommandRestricted {
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
         GuildPlayer player = PlayerRegistry.getExisting(guild);
 
         if(player == null || player.isQueueEmpty()) {
-            TextUtils.replyWithName(channel, invoker, "The queue is empty.");
+            TextUtils.replyWithName(channel, invoker, I18n.get(guild).getString("queueEmpty"));
             return;
         }
 
         if(args.length == 1) {
-            TextUtils.replyWithName(channel, invoker, "Proper usage:\n`;;rewind [[hh:]mm:]ss`");
+            String command = args[0].substring(Config.CONFIG.getPrefix().length());
+            HelpCommand.sendFormattedCommandHelp(guild, channel, invoker, command);
             return;
         }
 
@@ -56,18 +65,31 @@ public class RewindCommand extends Command implements IMusicCommand {
         try {
             t = TextUtils.parseTimeString(args[1]);
         } catch (IllegalStateException e){
-            TextUtils.replyWithName(channel, invoker, "Proper usage:\n`;;rewind [[hh:]mm:]ss`");
+            String command = args[0].substring(Config.CONFIG.getPrefix().length());
+            HelpCommand.sendFormattedCommandHelp(guild, channel, invoker, command);
             return;
         }
 
-        AudioTrack at = player.getPlayingTrack().getTrack();
+        AudioTrackContext atc = player.getPlayingTrack();
+        AudioTrack at = atc.getTrack();
 
         //Ensure bounds
         t = Math.max(0, t);
-        t = Math.min(at.getPosition(), t);
+        t = Math.min(atc.getEffectivePosition(), t);
 
         at.setPosition(at.getPosition() - t);
-        channel.sendMessage("Rewinding **" + at.getInfo().title + "** by " + TextUtils.formatTime(t) + ".").queue();
+        channel.sendMessage(MessageFormat.format(I18n.get(guild).getString("rewSuccess"), player.getPlayingTrack().getEffectiveTitle(), TextUtils.formatTime(t))).queue();
     }
 
+    @Override
+    public String help(Guild guild) {
+        String usage = "{0}{1} [[hh:]mm:]ss\n#";
+        String example = " {0}{1} 30";
+        return usage + I18n.get(guild).getString("helpRewindCommand") + example;
+    }
+
+    @Override
+    public PermissionLevel getMinimumPerms() {
+        return PermissionLevel.DJ;
+    }
 }

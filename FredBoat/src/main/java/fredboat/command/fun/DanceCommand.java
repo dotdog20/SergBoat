@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@
 package fredboat.command.fun;
 
 import fredboat.commandmeta.abs.Command;
-import fredboat.commandmeta.abs.ICommand;
+import fredboat.commandmeta.abs.IFunCommand;
 import fredboat.event.EventListenerBoat;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -34,7 +34,7 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
-public class DanceCommand extends Command implements ICommand {
+public class DanceCommand extends Command implements IFunCommand {
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
@@ -44,13 +44,13 @@ public class DanceCommand extends Command implements ICommand {
                 synchronized (channel) {
                     try {
                     Message msg = channel.sendMessage('\u200b' + "\\o\\").complete(true);
-                    EventListenerBoat.messagesToDeleteIfIdDeleted.put(message.getId(), msg);
+                        EventListenerBoat.messagesToDeleteIfIdDeleted.put(message.getId(), msg.getId());
                     long start = System.currentTimeMillis();
                         synchronized (this) {
                             while (start + 60000 > System.currentTimeMillis()) {
-                                wait(100);
+                                wait(1000);
                                 msg = msg.editMessage("/o/").complete(true);
-                                wait(100);
+                                wait(1000);
                                 msg = msg.editMessage("\\o\\").complete(true);
                             }
                         }
@@ -60,7 +60,12 @@ public class DanceCommand extends Command implements ICommand {
             }
         };
 
-        Thread thread = new Thread(func);
+        Thread thread = new Thread(func, DanceCommand.class.getSimpleName() + " dance");
         thread.start();
+    }
+
+    @Override
+    public String help(Guild guild) {
+        return "{0}{1}\n#Dance for a minute.";
     }
 }

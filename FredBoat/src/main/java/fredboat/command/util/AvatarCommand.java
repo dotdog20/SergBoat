@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,22 +25,33 @@
 
 package fredboat.command.util;
 
+import fredboat.Config;
 import fredboat.commandmeta.abs.Command;
+import fredboat.commandmeta.abs.IUtilCommand;
+import fredboat.feature.I18n;
 import fredboat.util.TextUtils;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
-public class AvatarCommand extends Command {
+import java.text.MessageFormat;
+
+public class AvatarCommand extends Command implements IUtilCommand {
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
-        if(message.getMentionedUsers().isEmpty()){
-            TextUtils.replyWithName(channel, invoker, " proper usage is: ```;;avatar @<username>```");
+        if (message.getMentionedUsers().isEmpty()) {
+            String command = args[0].substring(Config.CONFIG.getPrefix().length());
+            HelpCommand.sendFormattedCommandHelp(guild, channel, invoker, command);
         } else {
-            TextUtils.replyWithName(channel, invoker, " found it\n"+message.getMentionedUsers().get(0).getAvatarUrl());
+            TextUtils.replyWithName(channel, invoker, MessageFormat.format(I18n.get(guild).getString("avatarSuccess"), message.getMentionedUsers().get(0).getAvatarUrl()));
         }
     }
 
+    @Override
+    public String help(Guild guild) {
+        String usage = "{0}{1} @<username>\n#";
+        return usage + I18n.get(guild).getString("helpAvatarCommand");
+    }
 }

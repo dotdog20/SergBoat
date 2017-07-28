@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,8 @@
 package fredboat.command.fun;
 
 import fredboat.commandmeta.abs.Command;
-import fredboat.util.CacheUtil;
+import fredboat.commandmeta.abs.IFunCommand;
+import fredboat.util.rest.CacheUtil;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
@@ -34,7 +35,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.io.IOException;
 
-public class RemoteFileCommand extends Command {
+public class RemoteFileCommand extends Command implements IFunCommand {
 
     public String msg;
 
@@ -51,4 +52,8 @@ public class RemoteFileCommand extends Command {
         }
     }
 
+    @Override
+    public String help(Guild guild) {
+        return "{0}{1}\n#Post a funny image or meme.";
+    }
 }

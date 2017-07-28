@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,19 +28,25 @@ package fredboat.command.admin;
 import fredboat.audio.AbstractPlayer;
 import fredboat.audio.PlayerRegistry;
 import fredboat.commandmeta.abs.Command;
-import fredboat.commandmeta.abs.ICommandOwnerRestricted;
+import fredboat.commandmeta.abs.ICommand;
+import fredboat.commandmeta.abs.ICommandRestricted;
+import fredboat.perms.PermissionLevel;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.util.concurrent.*;
 
-public class EvalCommand extends Command implements ICommandOwnerRestricted {
+public class EvalCommand extends Command implements ICommand, ICommandRestricted {
+
+    private static final Logger log = LoggerFactory.getLogger(EvalCommand.class);
 
     //Thanks Dinos!
     private ScriptEngine engine;
@@ -87,6 +93,7 @@ public class EvalCommand extends Command implements ICommandOwnerRestricted {
 
             } catch (Exception ex) {
                 channel.sendMessage("`"+ex.getMessage()+"`").queue();
+                log.error("Error occurred in eval", ex);
                 return;
             }
 
@@ -118,5 +125,15 @@ public class EvalCommand extends Command implements ICommandOwnerRestricted {
             }
         };
         script.start();
+    }
+
+    @Override
+    public String help(Guild guild) {
+        return "{0}{1} <Java-code>\\n#Run the provided Java code.";
+    }
+
+    @Override
+    public PermissionLevel getMinimumPerms() {
+        return PermissionLevel.BOT_OWNER;
     }
 }

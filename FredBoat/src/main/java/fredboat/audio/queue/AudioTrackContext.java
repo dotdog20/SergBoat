@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,33 +26,38 @@
 package fredboat.audio.queue;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import fredboat.FredBoat;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.User;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class AudioTrackContext implements Comparable<AudioTrackContext> {
 
-    private final AudioTrack track;
+    protected final AudioTrack track;
     private final String userId;
     private final String guildId;
-    private final JDA jda;
+    private final FredBoat shard;
     private int rand;
+    private final int id; //used to identify this track even when the track gets cloned and the rand reranded
 
     public AudioTrackContext(AudioTrack at, Member member) {
         this.track = at;
         this.userId = member.getUser().getId();
         this.guildId = member.getGuild().getId();
-        this.jda = member.getJDA();
-        this.rand = new Random().nextInt();
+        this.shard = FredBoat.getInstance(member.getJDA());
+        this.rand = ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
+        this.id = ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
     }
 
     public AudioTrackContext(AudioTrack at, Member member, int chronologicalIndex) {
         this.track = at;
         this.userId = member.getUser().getId();
         this.guildId = member.getGuild().getId();
-        this.jda = member.getJDA();
-        this.rand = new Random().nextInt();
+        this.shard = FredBoat.getInstance(member.getJDA());
+        this.rand = ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
+        this.id = ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
     }
 
     public AudioTrack getTrack() {
@@ -60,20 +65,57 @@ public class AudioTrackContext implements Comparable<AudioTrackContext> {
     }
 
     public Member getMember() {
-        return jda.getGuildById(guildId).getMember(jda.getUserById(userId));
+        //if we can't find the user anymore
+        //work around tons of null pointer exceptions throwing/handling by setting fredboat as the owner of the song
+        User user = getJda().getUserById(userId);
+        if (user == null) { //the bot has no shared servers with the user
+            user = getJda().getSelfUser();
+        }
+        Member songOwner = getJda().getGuildById(guildId).getMember(user);
+        if (songOwner == null) //member left the guild
+            songOwner = getJda().getGuildById(guildId).getSelfMember();
+        return songOwner;
     }
 
     public int getRand() {
         return rand;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setRand(int rand) {
+        this.rand = rand;
+    }
+
     public int randomize() {
-        rand = new Random().nextInt();
+        rand = ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
         return rand;
     }
 
     public AudioTrackContext makeClone() {
         return new AudioTrackContext(track.makeClone(), getMember());
+    }
+
+    public long getEffectiveDuration() {
+        return track.getDuration();
+    }
+
+    public long getEffectivePosition() {
+        return track.getPosition();
+    }
+
+    public void setEffectivePosition(long position) {
+        track.setPosition(position);
+    }
+
+    public String getEffectiveTitle() {
+        return track.getInfo().title;
+    }
+
+    public long getStartPosition() {
+        return 0;
     }
 
     @Override
@@ -85,5 +127,32 @@ public class AudioTrackContext implements Comparable<AudioTrackContext> {
         } else {
             return 0;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AudioTrackContext)) return false;
+
+        AudioTrackContext that = (AudioTrackContext) o;
+
+        if (getRand() != that.getRand()) return false;
+        if (!getTrack().equals(that.getTrack())) return false;
+        if (!userId.equals(that.userId)) return false;
+        return guildId.equals(that.guildId);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getTrack().hashCode();
+        result = 31 * result + userId.hashCode();
+        result = 31 * result + guildId.hashCode();
+        result = 31 * result + getRand();
+        return result;
+    }
+
+    public JDA getJda() {
+        return shard.getJda();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,43 +24,42 @@
  */
 package fredboat.event;
 
+import fredboat.Config;
 import fredboat.commandmeta.CommandManager;
 import fredboat.commandmeta.CommandRegistry;
 import fredboat.commandmeta.abs.Command;
-import fredboat.util.BotConstants;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.regex.Matcher;
 
-public class EventListenerSelf extends AbstractScopedEventListener {
+public class EventListenerSelf extends AbstractEventListener {
 
     private static final Logger log = LoggerFactory.getLogger(EventListenerSelf.class);
 
-    public EventListenerSelf(int scope, String defaultPrefix) {
-        super(scope, defaultPrefix);
+    public EventListenerSelf() {
     }
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (!event.getAuthor().getId().equals(BotConstants.OWNER_ID)) {
+        if (!event.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) {
             return;
         }
 
-        if (event.getMessage().getContent().length() < defaultPrefix.length()) {
+        if (event.getMessage().getContent().length() < Config.CONFIG.getPrefix().length()) {
             return;
         }
 
-        if (event.getMessage().getContent().substring(0, defaultPrefix.length()).equals(defaultPrefix)) {
+        if (event.getMessage().getContent().substring(0, Config.CONFIG.getPrefix().length()).equals(Config.CONFIG.getPrefix())) {
             Command invoked = null;
             try {
                 log.info(event.getGuild().getName() + " \t " + event.getAuthor().getName() + " \t " + event.getMessage().getRawContent());
                 Matcher matcher = COMMAND_NAME_PREFIX.matcher(event.getMessage().getContent());
                 matcher.find();
 
-                invoked = CommandRegistry.getCommandFromScope(scope, matcher.group()).command;
-            } catch (NullPointerException ex) {
+                invoked = CommandRegistry.getCommand(matcher.group()).command;
+            } catch (NullPointerException ignored) {
 
             }
 
@@ -71,8 +70,8 @@ public class EventListenerSelf extends AbstractScopedEventListener {
             CommandManager.prefixCalled(invoked, event.getGuild(), event.getTextChannel(), event.getMember(), event.getMessage());
 
             try {
-                event.getMessage().deleteMessage().queue();
-            } catch (Exception ex) {
+                event.getMessage().delete().queue();
+            } catch (Exception ignored) {
             }
 
         }

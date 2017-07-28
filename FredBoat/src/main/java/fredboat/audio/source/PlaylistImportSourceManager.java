@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,7 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.*;
 import fredboat.audio.AbstractPlayer;
+import fredboat.audio.queue.PlaylistInfo;
 import org.slf4j.LoggerFactory;
 
 import java.io.DataInput;
@@ -44,14 +45,13 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class PlaylistImportSourceManager implements AudioSourceManager {
+public class PlaylistImportSourceManager implements AudioSourceManager, PlaylistImporter {
 
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(PlaylistImportSourceManager.class);
 
-    private static final Pattern PLAYLIST_PATTERN = Pattern.compile("^https?:\\/\\/hastebin\\.com\\/(?:raw\\/)?(\\w+)(?:\\..+)?$");
-    private static final AudioPlayerManager PRIVATE_MANAGER = AbstractPlayer.registerSourceManagers(new DefaultAudioPlayerManager());
+    private static final AudioPlayerManager PRIVATE_MANAGER = AbstractPlayer
+            .registerSourceManagers(new DefaultAudioPlayerManager());
 
     @Override
     public String getSourceName() {
@@ -60,35 +60,25 @@ public class PlaylistImportSourceManager implements AudioSourceManager {
 
     @Override
     public AudioItem loadItem(DefaultAudioPlayerManager manager, AudioReference ar) {
-        Matcher m = PLAYLIST_PATTERN.matcher(ar.identifier);
 
-        if (!m.find()) {
+        String[] parsed = parse(ar.identifier);
+        if (parsed == null) return null;
+        String serviceName = parsed[0];
+        String pasteId = parsed[1];
+
+
+        if (pasteId == null || "".equals(pasteId) || !PasteServiceConstants.PASTE_SERVICE_URLS.containsKey(serviceName)) {
             return null;
         }
+        List<String> trackIds = loadAndParseTrackIds(serviceName, pasteId);
 
-        String hasteId = m.group(1);
-        String response;
-        try {
-            response = Unirest.get("http://hastebin.com/raw/" + hasteId).asString().getBody();
-        } catch (UnirestException ex) {
-            throw new FriendlyException("Couldn't load playlist. Either Hastebin is down or the playlist does not exist.", FriendlyException.Severity.FAULT, ex);
-        }
-
-        String[] unfiltered = response.split("\\s");
-        ArrayList<String> filtered = new ArrayList<>();
-        for (String str : unfiltered) {
-            if (!str.equals("")) {
-                filtered.add(str);
-            }
-        }
-
-        HastebinAudioResultHandler handler = new HastebinAudioResultHandler();
+        PasteServiceAudioResultHandler handler = new PasteServiceAudioResultHandler();
         Future<Void> lastFuture = null;
-        for (String id : filtered) {
+        for (String id : trackIds) {
             lastFuture = PRIVATE_MANAGER.loadItemOrdered(handler, id, handler);
         }
-        
-        if(lastFuture == null){
+
+        if (lastFuture == null) {
             return null;
         }
 
@@ -98,7 +88,7 @@ public class PlaylistImportSourceManager implements AudioSourceManager {
             throw new FriendlyException("Failed loading playlist item", FriendlyException.Severity.FAULT, ex);
         }
 
-        return new BasicAudioPlaylist(hasteId, handler.getLoadedTracks(), null, false);
+        return new BasicAudioPlaylist(pasteId, handler.getLoadedTracks(), null, false);
     }
 
     @Override
@@ -120,11 +110,84 @@ public class PlaylistImportSourceManager implements AudioSourceManager {
     public void shutdown() {
     }
 
-    private class HastebinAudioResultHandler implements AudioLoadResultHandler {
+    /**
+     * @return null or a string array containing the service name at [0] and the paste id at [1] of the requested playlist
+     */
+    private String[] parse(String identifier) {
+        String pasteId;
+        Matcher m;
+        Matcher serviceNameMatcher = PasteServiceConstants.SERVICE_NAME_PATTERN.matcher(identifier);
+
+        if (!serviceNameMatcher.find()) {
+            return null;
+        }
+
+        String serviceName = serviceNameMatcher.group(1).trim().toLowerCase();
+
+        switch (serviceName) {
+
+            case "hastebin":
+                m = PasteServiceConstants.HASTEBIN_PATTERN.matcher(identifier);
+                pasteId = m.find() ? m.group(1) : null;
+                break;
+
+            case "pastebin":
+                m = PasteServiceConstants.PASTEBIN_PATTERN.matcher(identifier);
+                pasteId = m.find() ? m.group(1) : null;
+                break;
+
+            default:
+                return null;
+        }
+
+        String[] result = new String[2];
+        result[0] = serviceName;
+        result[1] = pasteId;
+        return result;
+    }
+
+    private List<String> loadAndParseTrackIds(String serviceName, String pasteId) {
+        String response;
+        try {
+            response = Unirest.get(PasteServiceConstants.PASTE_SERVICE_URLS.get(serviceName) + pasteId).asString()
+                    .getBody();
+        } catch (UnirestException ex) {
+            throw new FriendlyException(
+                    "Couldn't load playlist. Either " + serviceName + " is down or the playlist does not exist.",
+                    FriendlyException.Severity.FAULT, ex);
+        }
+
+        String[] unfiltered = response.split("\\s");
+        ArrayList<String> filtered = new ArrayList<>();
+        for (String str : unfiltered) {
+            if (!str.equals("")) {
+                filtered.add(str);
+            }
+        }
+        return filtered;
+    }
+
+
+    @Override
+    public PlaylistInfo getPlaylistDataBlocking(String identifier) {
+
+        String[] pasteData = parse(identifier);
+        if (pasteData == null) return null;
+
+        String serviceName = pasteData[0];
+        String pasteId = pasteData[1];
+        if (serviceName == null || "".equals(serviceName) || pasteId == null || "".equals(pasteId)) return null;
+
+        List<String> trackIds = loadAndParseTrackIds(serviceName, pasteId);
+
+        return new PlaylistInfo(trackIds.size(), pasteId, PlaylistInfo.Source.PASTESERVICE);
+    }
+
+    private class PasteServiceAudioResultHandler implements AudioLoadResultHandler {
 
         private final List<AudioTrack> loadedTracks;
 
-        private HastebinAudioResultHandler() {
+        private PasteServiceAudioResultHandler() {
             this.loadedTracks = new ArrayList<>();
         }
 
@@ -140,12 +203,12 @@ public class PlaylistImportSourceManager implements AudioSourceManager {
 
         @Override
         public void noMatches() {
-            //ignore
+            // ignore
         }
 
         @Override
         public void loadFailed(FriendlyException exception) {
-            log.debug("Failed loading track provided via hastebin ", exception);
+            log.debug("Failed loading track provided via the paste service", exception);
         }
 
         public List<AudioTrack> getLoadedTracks() {

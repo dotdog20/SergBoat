@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,9 +28,14 @@ package fredboat.audio;
 import com.sedmelluq.discord.lavaplayer.tools.io.MessageInput;
 import com.sedmelluq.discord.lavaplayer.tools.io.MessageOutput;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import fredboat.Config;
 import fredboat.FredBoat;
 import fredboat.audio.queue.AudioTrackContext;
-import fredboat.util.ExitCodes;
+import fredboat.audio.queue.RepeatMode;
+import fredboat.audio.queue.SplitAudioTrackContext;
+import fredboat.feature.I18n;
+import fredboat.shared.constant.DistributionEnum;
+import fredboat.shared.constant.ExitCodes;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
@@ -40,12 +45,15 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.Charset;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Scanner;
 
 public class MusicPersistenceHandler {
 
@@ -64,16 +72,6 @@ public class MusicPersistenceHandler {
         boolean isUpdate = code == ExitCodes.EXIT_CODE_UPDATE;
         boolean isRestart = code == ExitCodes.EXIT_CODE_RESTART;
 
-        String msg;
-
-        if (isUpdate) {
-            msg = "FredBoat♪♪ is updating. This should only take a minute and will reload the current playlist.";
-        } else if (isRestart) {
-            msg = "FredBoat♪♪ is restarting. This should only take a minute and will reload the current playlist.";
-        } else {
-            msg = "FredBoat♪♪ is shutting down. Once the bot comes back the current playlist will reload.";
-        }
-
         for (String gId : reg.keySet()) {
             try {
                 GuildPlayer player = reg.get(gId);
@@ -82,18 +80,28 @@ public class MusicPersistenceHandler {
                     continue;//Nothing to see here
                 }
 
+                String msg;
+
+                if (isUpdate) {
+                    msg = I18n.get(player.getGuild()).getString("shutdownUpdating");
+                } else if (isRestart) {
+                    msg = I18n.get(player.getGuild()).getString("shutdownRestarting");
+                } else {
+                    msg = I18n.get(player.getGuild()).getString("shutdownIndef");
+                }
+
                 player.getActiveTextChannel().sendMessage(msg).queue();
 
                 JSONObject data = new JSONObject();
-                data.put("vc", player.getUserCurrentVoiceChannel(player.getGuild().getSelfMember().getUser()).getId());
+                data.put("vc", player.getUserCurrentVoiceChannel(player.getGuild().getSelfMember()).getId());
                 data.put("tc", player.getActiveTextChannel().getId());
                 data.put("isPaused", player.isPaused());
                 data.put("volume", Float.toString(player.getVolume()));
-                data.put("repeat", player.isRepeat());
+                data.put("repeatMode", player.getRepeatMode());
                 data.put("shuffle", player.isShuffle());
 
                 if (player.getPlayingTrack() != null) {
-                    data.put("position", player.getPlayingTrack().getTrack().getPosition());
+                    data.put("position", player.getPlayingTrack().getEffectivePosition());
                 }
 
                 ArrayList<JSONObject> identifiers = new ArrayList<>();
@@ -106,6 +114,16 @@ public class MusicPersistenceHandler {
                             .put("message", Base64.encodeBase64String(baos.toByteArray()))
                             .put("user", atc.getMember().getUser().getId());
 
+                    if(atc instanceof SplitAudioTrackContext) {
+                        JSONObject split = new JSONObject();
+                        SplitAudioTrackContext c = (SplitAudioTrackContext) atc;
+                        split.put("title", c.getEffectiveTitle())
+                                .put("startPos", c.getStartPosition())
+                                .put("endPos", c.getStartPosition() + c.getEffectiveDuration());
+
+                        ident.put("split", split);
+                    }
+
                     identifiers.add(ident);
                 }
 
@@ -114,7 +132,7 @@ public class MusicPersistenceHandler {
                 try {
                     FileUtils.writeStringToFile(new File(dir, gId), data.toString(), Charset.forName("UTF-8"));
                 } catch (IOException ex) {
-                    player.getActiveTextChannel().sendMessage("Error occurred when saving persistence file: " + ex.getMessage()).queue();
+                    player.getActiveTextChannel().sendMessage(MessageFormat.format(I18n.get(player.getGuild()).getString("shutdownPersistenceFail"), ex.getMessage())).queue();
                 }
             } catch (Exception ex) {
                 log.error("Error when saving persistence file", ex);
@@ -123,21 +141,33 @@ public class MusicPersistenceHandler {
     }
 
     public static void reloadPlaylists() {
-        log.info("Began reloading playlists");
         File dir = new File("music_persistence");
+
+        if(Config.CONFIG.getDistribution() == DistributionEnum.MUSIC) {
+            log.warn("Music persistence loading is currently disabled!");
+
+            File[] files = dir.listFiles();
+            if (files != null) {
+                for (File f : files) {
+                    boolean deleted = f.delete();
+                    log.info(deleted ? "Deleted persistence file: " + f : "Failed to delete persistence file: " + f);
+                }
+
+                dir.delete();
+            }
+            return;
+        }
+
+        log.info("Began reloading playlists");
         if (!dir.exists()) {
             return;
         }
         log.info("Found persistence data: " + Arrays.toString(dir.listFiles()));
 
         for (File file : dir.listFiles()) {
-            InputStream is = null;
             try {
                 String gId = file.getName();
-                is = new FileInputStream(file);
-                Scanner scanner = new Scanner(is);
-                JSONObject data = new JSONObject(scanner.useDelimiter("\\A").next());
-                scanner.close();
+                JSONObject data = new JSONObject(FileUtils.readFileToString(file, Charset.forName("UTF-8")));
 
                 //TODO: Make shard in-specific
                 boolean isPaused = data.getBoolean("isPaused");
@@ -145,17 +175,17 @@ public class MusicPersistenceHandler {
                 VoiceChannel vc = FredBoat.getVoiceChannelById(data.getString("vc"));
                 TextChannel tc = FredBoat.getTextChannelById(data.getString("tc"));
                 float volume = Float.parseFloat(data.getString("volume"));
-                boolean repeat = data.getBoolean("repeat");
+                RepeatMode repeatMode = data.getEnum(RepeatMode.class, "repeatMode");
                 boolean shuffle = data.getBoolean("shuffle");
 
                 GuildPlayer player = PlayerRegistry.get(vc.getJDA(), gId);
 
                 player.joinChannel(vc);
                 player.setCurrentTC(tc);
-                if(FredBoat.distribution.volumeSupported()) {
+                if(Config.CONFIG.getDistribution().volumeSupported()) {
                     player.setVolume(volume);
                 }
-                player.setRepeat(repeat);
+                player.setRepeatMode(repeatMode);
                 player.setShuffle(shuffle);
 
                 final boolean[] isFirst = {true};
@@ -164,6 +194,8 @@ public class MusicPersistenceHandler {
                     JSONObject json = (JSONObject) t;
                     byte[] message = Base64.decodeBase64(json.getString("message"));
                     Member member = vc.getGuild().getMember(vc.getJDA().getUserById(json.getString("user")));
+                    if (member == null)
+                        member = vc.getGuild().getSelfMember(); //member left the guild meanwhile, set ourselves as the one who added the song
 
                     AudioTrack at;
                     try {
@@ -175,28 +207,44 @@ public class MusicPersistenceHandler {
 
                     if (at == null) {
                         log.error("Loaded track that was null! Skipping...");
+                        return;
                     }
 
-                    if (isFirst[0]) {
-                        isFirst[0] = false;
-                        if (data.has("position")) {
-                            at.setPosition(data.getLong("position"));
+                    // Handle split tracks
+                    AudioTrackContext atc;
+                    JSONObject split = json.optJSONObject("split");
+                    if(split != null) {
+                        atc = new SplitAudioTrackContext(at, member,
+                                split.getLong("startPos"),
+                                split.getLong("endPos"),
+                                split.getString("title")
+                        );
+                        at.setPosition(split.getLong("startPos"));
+
+                        if (isFirst[0]) {
+                            isFirst[0] = false;
+                            if (data.has("position")) {
+                                at.setPosition(split.getLong("startPos") + data.getLong("position"));
+                            }
+                        }
+                    } else {
+                        atc = new AudioTrackContext(at, member);
+
+                        if (isFirst[0]) {
+                            isFirst[0] = false;
+                            if (data.has("position")) {
+                                at.setPosition(data.getLong("position"));
+                            }
                         }
                     }
 
-                    player.queue(new AudioTrackContext(at, member));
+                    player.queue(atc);
                 });
 
                 player.setPause(isPaused);
-                tc.sendMessage("Reloading playlist. `" + sources.length() + "` tracks found.").queue();
+                tc.sendMessage(MessageFormat.format(I18n.get(player.getGuild()).getString("reloadSuccess"), sources.length())).queue();
             } catch (Exception ex) {
                 log.error("Error when loading persistence file", ex);
-            } finally {
-                try {
-                    is.close();
-                } catch (Exception ex) {
-                    log.error("Error when closing InputStream after error", ex);
-                }
             }
         }
 

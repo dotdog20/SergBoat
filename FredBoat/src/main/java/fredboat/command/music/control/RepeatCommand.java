@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,27 +25,80 @@
 
 package fredboat.command.music.control;
 
+import fredboat.Config;
 import fredboat.audio.GuildPlayer;
 import fredboat.audio.PlayerRegistry;
+import fredboat.audio.queue.RepeatMode;
+import fredboat.command.util.HelpCommand;
 import fredboat.commandmeta.abs.Command;
+import fredboat.commandmeta.abs.ICommandRestricted;
 import fredboat.commandmeta.abs.IMusicCommand;
+import fredboat.feature.I18n;
+import fredboat.perms.PermissionLevel;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
-public class RepeatCommand extends Command implements IMusicCommand {
+public class RepeatCommand extends Command implements IMusicCommand, ICommandRestricted {
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
         GuildPlayer player = PlayerRegistry.get(guild);
-        player.setRepeat(!player.isRepeat());
 
-        if (player.isRepeat()) {
-            channel.sendMessage("The player is now on repeat.").queue();
-        } else {
-            channel.sendMessage("The player is no longer on repeat.").queue();
+        if (args.length < 2) {
+            String command = args[0].substring(Config.CONFIG.getPrefix().length());
+            HelpCommand.sendFormattedCommandHelp(guild, channel, invoker, command);
+            return;
+        }
+
+        RepeatMode desiredRepeatMode;
+        String userInput = args[1];
+        switch (userInput) {
+            case "off":
+            case "out":
+                desiredRepeatMode = RepeatMode.OFF;
+                break;
+            case "single":
+            case "one":
+            case "track":
+                desiredRepeatMode = RepeatMode.SINGLE;
+                break;
+            case "all":
+            case "list":
+            case "queue":
+                desiredRepeatMode = RepeatMode.ALL;
+                break;
+            case "help":
+            default:
+                String command = args[0].substring(Config.CONFIG.getPrefix().length());
+                HelpCommand.sendFormattedCommandHelp(guild, channel, invoker, command);
+                return;
+        }
+
+        player.setRepeatMode(desiredRepeatMode);
+
+        switch (desiredRepeatMode) {
+            case OFF:
+                channel.sendMessage(I18n.get(guild).getString("repeatOff")).queue();
+                break;
+            case SINGLE:
+                channel.sendMessage(I18n.get(guild).getString("repeatOnSingle")).queue();
+                break;
+            case ALL:
+                channel.sendMessage(I18n.get(guild).getString("repeatOnAll")).queue();
+                break;
         }
     }
 
+    @Override
+    public String help(Guild guild) {
+        String usage = "{0}{1} single|all|off\n#";
+        return usage + I18n.get(guild).getString("helpRepeatCommand");
+    }
+
+    @Override
+    public PermissionLevel getMinimumPerms() {
+        return PermissionLevel.DJ;
+    }
 }

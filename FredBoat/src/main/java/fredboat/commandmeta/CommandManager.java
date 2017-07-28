@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,82 +25,95 @@
 
 package fredboat.commandmeta;
 
-import fredboat.FredBoat;
-import fredboat.commandmeta.abs.*;
-import fredboat.command.fun.*;
-import fredboat.util.*;
+
+import fredboat.Config;
+import fredboat.commandmeta.abs.Command;
+import fredboat.commandmeta.abs.ICommandRestricted;
+import fredboat.commandmeta.abs.IMusicBackupCommand;
+import fredboat.commandmeta.abs.IMusicCommand;
+import fredboat.feature.I18n;
+import fredboat.perms.PermissionLevel;
+import fredboat.perms.PermsUtil;
+import fredboat.shared.constant.BotConstants;
+import fredboat.shared.constant.DistributionEnum;
+import fredboat.util.DiscordUtil;
+import fredboat.util.TextUtils;
+import fredboat.util.rest.RestActionScheduler;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.utils.PermissionUtil;
 import org.slf4j.LoggerFactory;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CommandManager {
 
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(CommandManager.class);
 
-    public static int commandsExecuted = 0;
+    public static final AtomicInteger commandsExecuted = new AtomicInteger(0);
 
     public static void prefixCalled(Command invoked, Guild guild, TextChannel channel, Member invoker, Message message) {
         String[] args = commandToArguments(message.getRawContent());
-        commandsExecuted++;
+        commandsExecuted.getAndIncrement();
 
-        if (invoked instanceof IMusicBackupCommand && DiscordUtil.isMusicBot() && DiscordUtil.isMainBotPresent(guild)) {
-            log.info("Ignored command because main bot is present");
+        if (invoked instanceof IMusicBackupCommand
+                && guild.getJDA().getSelfUser().getId().equals(BotConstants.MUSIC_BOT_ID)
+                && DiscordUtil.isMainBotPresent(guild)) {
+            log.info("Ignored command because main bot is present and I am the public music FredBoat");
             return;
         }
 
-        if (FredBoat.distribution == DistributionEnum.PATRON && guild.getId().equals(BotConstants.FREDBOAT_HANGOUT_ID)) {
+        if (guild.getJDA().getSelfUser().getId().equals(BotConstants.PATRON_BOT_ID)
+                && Config.CONFIG.getDistribution() == DistributionEnum.PATRON
+                && guild.getId().equals(BotConstants.FREDBOAT_HANGOUT_ID)) {
             log.info("Ignored command because patron bot is not allowed in FredBoatHangout");
             return;
         }
 
-        if (FredBoat.distribution == DistributionEnum.MUSIC
+        if (Config.CONFIG.getDistribution() == DistributionEnum.MUSIC
                 && DiscordUtil.isPatronBotPresentAndOnline(guild)
+                && guild.getMemberById(BotConstants.PATRON_BOT_ID) != null
+                && guild.getMemberById(BotConstants.PATRON_BOT_ID).hasPermission(channel, Permission.MESSAGE_WRITE, Permission.MESSAGE_READ)
+                && Config.CONFIG.getPrefix().equals(Config.DEFAULT_PREFIX)
                 && !guild.getId().equals(BotConstants.FREDBOAT_HANGOUT_ID)) {
-            log.info("Ignored command because patron bot is present");
+            log.info("Ignored command because patron bot is able to user that channel");
             return;
         }
 
-        if (invoked instanceof IMusicCommand && !PermissionUtil.checkPermission(
-                channel,
-                channel.getGuild().getSelfMember(),
-                Permission.MESSAGE_WRITE)) {
+        if (invoked instanceof IMusicCommand
+                && !channel.getGuild().getSelfMember().hasPermission(channel, Permission.MESSAGE_WRITE)) {
             log.debug("Ignored command because it was a music command, and this bot cannot write in that channel");
             return;
         }
 
-        if (invoked instanceof ICommandOwnerRestricted) {
-            //Check if invoker is actually Fre_d
-            if (!invoker.getUser().getId().equals(BotConstants.OWNER_ID)) {
-                channel.sendMessage(TextUtils.prefaceWithName(invoker, " you are not allowed to use that command!")).queue();
+        if (invoked instanceof ICommandRestricted) {
+            //Check if invoker actually has perms
+            PermissionLevel minPerms = ((ICommandRestricted) invoked).getMinimumPerms();
+            PermissionLevel actual = PermsUtil.getPerms(invoker);
+
+            if(actual.getLevel() < minPerms.getLevel()) {
+                TextUtils.replyWithName(channel, invoker, MessageFormat.format(I18n.get(guild).getString("cmdPermsTooLow"), minPerms, actual));
                 return;
             }
         }
 
-        if (invoked instanceof RemoteFileCommand && guild.getId().equals("320237845254111234")) {
-          channel.sendMessage(invoker.getEffectiveName() + " is Disabled.").queue();
-          return;
-        }
-        if (invoked instanceof ICommandDisabled && guild.getId().equals("320237845254111234")) {
-          channel.sendMessage("\" " + invoker.getEffectiveName() + " is disabled.\" - Vlad, 2017").queue();
-          return;
-        }
         //Hardcode music commands in FredBoatHangout. Blacklist any channel that isn't #general or #staff, but whitelist Frederikam
-        if (invoked instanceof IMusicCommand && guild.getId().equals("174820236481134592")) {
+        if (invoked instanceof IMusicCommand
+                && guild.getId().equals(BotConstants.FREDBOAT_HANGOUT_ID)
+                && guild.getJDA().getSelfUser().getId().equals(BotConstants.MUSIC_BOT_ID)) {
             if (!channel.getId().equals("174821093633294338")
                     && !channel.getId().equals("217526705298866177")
-                    //&& !invoker.getUser().getId().equals("203330266461110272")//Cynth
+                    && !invoker.getUser().getId().equals("203330266461110272")//Cynth
                     && !invoker.getUser().getId().equals("81011298891993088")) {
-                message.deleteMessage().queue();
+                message.delete().queue();
                 channel.sendMessage(invoker.getEffectiveName() + ": Please don't spam music commands outside of <#174821093633294338>.").queue(message1 -> {
                     RestActionScheduler.schedule(
-                            message1.deleteMessage(),
+                            message1.delete(),
                             5,
                             TimeUnit.SECONDS
                     );
@@ -118,7 +131,7 @@ public class CommandManager {
 
     }
 
-    private static String[] commandToArguments(String cmd) {
+    public static String[] commandToArguments(String cmd) {
         ArrayList<String> a = new ArrayList<>();
         int argi = 0;
         boolean isInQuote = false;

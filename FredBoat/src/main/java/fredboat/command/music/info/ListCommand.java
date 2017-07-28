@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,10 @@ package fredboat.command.music.info;
 import fredboat.audio.GuildPlayer;
 import fredboat.audio.PlayerRegistry;
 import fredboat.audio.queue.AudioTrackContext;
+import fredboat.audio.queue.RepeatMode;
 import fredboat.commandmeta.abs.Command;
 import fredboat.commandmeta.abs.IMusicCommand;
+import fredboat.feature.I18n;
 import fredboat.util.TextUtils;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
@@ -38,90 +40,120 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import org.slf4j.LoggerFactory;
 
+import java.text.MessageFormat;
+import java.util.List;
+
 public class ListCommand extends Command implements IMusicCommand {
 
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(ListCommand.class);
+
+    private static final int PAGE_SIZE = 10;
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
         GuildPlayer player = PlayerRegistry.get(guild);
         player.setCurrentTC(channel);
-        if (!player.isQueueEmpty()) {
-            MessageBuilder mb = new MessageBuilder();
 
-            int numberLength = 2;
-            /*if(player.isShuffle()) {
-                numberLength = Integer.toString(player.getSongCount()).length();
-                numberLength = Math.max(2, numberLength);
-            } else {
-                numberLength = 2;
-            }*/
+        if(player.isQueueEmpty()) {
+            channel.sendMessage(I18n.get(guild).getString("npNotPlaying")).queue();
+            return;
+        }
 
-            int i = 0;
+        MessageBuilder mb = new MessageBuilder();
 
-            if(player.isShuffle()){
-                mb.append("Showing shuffled playlist.\n\n");
+        int page = 1;
+        if(args.length >= 2) {
+            try {
+                page = Integer.valueOf(args[1]);
+            } catch (NumberFormatException e) {
+                page = 1;
+            }
+        }
+
+        List<AudioTrackContext> tracks = player.getRemainingTracksOrdered();
+
+        int maxPages = (int) Math.ceil(((double) tracks.size() - 1d)) / PAGE_SIZE + 1;
+
+        page = Math.max(page, 1);
+        page = Math.min(page, maxPages);
+
+        int i = (page - 1) * PAGE_SIZE;
+        int listEnd = (page - 1) * PAGE_SIZE + PAGE_SIZE;
+        listEnd = Math.min(listEnd, player.getRemainingTracksOrdered().size());
+
+        int numberLength = Integer.toString(listEnd).length();
+
+        List<AudioTrackContext> sublist = tracks.subList(i, listEnd);
+
+        if (player.isShuffle()) {
+            mb.append(I18n.get(guild).getString("listShowShuffled"));
+            mb.append("\n");
+            if (player.getRepeatMode() == RepeatMode.OFF)
+                mb.append("\n");
+        }
+        if (player.getRepeatMode() == RepeatMode.SINGLE) {
+            mb.append(I18n.get(guild).getString("listShowRepeatSingle"));
+            mb.append("\n");
+        } else if (player.getRepeatMode() == RepeatMode.ALL) {
+            mb.append(I18n.get(guild).getString("listShowRepeatAll"));
+            mb.append("\n");
+        }
+
+        mb.append(MessageFormat.format(I18n.get(guild).getString("listPageNum"), page, maxPages));
+        mb.append("\n");
+        mb.append("\n");
+
+        for (AudioTrackContext atc : sublist) {
+            String status = " ";
+            if (i == 0) {
+                status = player.isPlaying() ? " \\▶" : " \\\u23F8"; //Escaped play and pause emojis
+            }
+            mb.append("[" +
+                    TextUtils.forceNDigits(i + 1, numberLength)
+                    + "]", MessageBuilder.Formatting.BLOCK)
+                    .append(status)
+                    .append(MessageFormat.format(I18n.get(guild).getString("listAddedBy"), atc.getEffectiveTitle(), atc.getMember().getEffectiveName()))
+                    .append("\n");
+
+            if (i == listEnd) {
+                break;
             }
 
-            for (AudioTrackContext atc : player.getRemainingTracksOrdered()) {
-                if (i == 0) {
-                    String status = player.isPlaying() ? " \\▶" : " \\\u23F8"; //Escaped play and pause emojis
-                    mb.append("[" +
-                            forceNDigits(i + 1, numberLength)
-                            + "]", MessageBuilder.Formatting.BLOCK)
-                            .append(status)
-                            .append(atc.getTrack().getInfo().title)
-                            .append("\n");
-                } else {
-                    mb.append("[" +
-                            forceNDigits(i + 1, numberLength)
-                            + "]", MessageBuilder.Formatting.BLOCK)
-                            .append(" " + atc.getTrack().getInfo().title)
-                            .append("\n");
-                    if (i == 10) {
-                        break;
-                    }
-                }
-                i++;
-            }
+            i++;
+        }
 
-            //Now add a timestamp for how much is remaining
-            long t = player.getTotalRemainingMusicTimeSeconds();
-            String timestamp = TextUtils.formatTime(t * 1000L);
+        //Now add a timestamp for how much is remaining
+        long t = player.getTotalRemainingMusicTimeSeconds();
+        String timestamp = TextUtils.formatTime(t * 1000L);
 
-            int tracks = player.getRemainingTracks().size() - player.getLiveTracks().size();
-            int streams = player.getLiveTracks().size();
+        int numTracks = player.getRemainingTracks().size() - player.getLiveTracks().size();
+        int streams = player.getLiveTracks().size();
 
-            String desc;
+        String desc;
 
-            if (tracks == 0) {
-                //We are only listening to streams
-                desc = "There " + (streams == 1 ? "is" : "are") + " **" + streams +
-                        "** live " + (streams == 1 ? "stream" : "streams") + " in the queue.";
-            } else {
-
-                desc = "There " + (tracks == 1 ? "is" : "are") + " **" + tracks
-                        + "** " + (tracks == 1 ? "track" : "tracks") + " with a remaining length of **[" + timestamp + "]**"
-                        + (streams == 0 ? "" : ", as well as **" + streams + "** live " + (streams == 1 ? "stream" : "streams")) + " in the queue.";
-
-            }
-            
-            mb.append("\n" + desc);
-
-            channel.sendMessage(mb.build()).queue();
+        if (numTracks == 0) {
+            //We are only listening to streams
+            desc = MessageFormat.format(I18n.get(guild).getString(streams == 1 ? "listStreamsOnlySingle" : "listStreamsOnlyMultiple"),
+                    streams, streams == 1 ?
+                    I18n.get(guild).getString("streamSingular") : I18n.get(guild).getString("streamPlural"));
         } else {
-            channel.sendMessage("Not currently playing anything.").queue();
-        }
-    }
 
-    private String forceNDigits(int i, int n) {
-        String str = Integer.toString(i);
-
-        while (str.length() < n) {
-            str = "0" + str;
+            desc = MessageFormat.format(I18n.get(guild).getString(numTracks == 1 ? "listStreamsOrTracksSingle" : "listStreamsOrTracksMultiple"),
+                    numTracks, numTracks == 1 ?
+                    I18n.get(guild).getString("trackSingular") : I18n.get(guild).getString("trackPlural"), timestamp, streams == 0
+                    ? "" : MessageFormat.format(I18n.get(guild).getString("listAsWellAsLiveStreams"), streams, streams == 1
+                    ? I18n.get(guild).getString("streamSingular") : I18n.get(guild).getString("streamPlural")));
         }
 
-        return str;
+        mb.append("\n").append(desc);
+
+        channel.sendMessage(mb.build()).queue();
+
     }
 
+    @Override
+    public String help(Guild guild) {
+        String usage = "{0}{1}\n#";
+        return usage + I18n.get(guild).getString("helpListCommand");
+    }
 }

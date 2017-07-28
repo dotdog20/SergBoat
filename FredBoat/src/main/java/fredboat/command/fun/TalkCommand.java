@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,29 +25,38 @@
 
 package fredboat.command.fun;
 
+import fredboat.Config;
 import fredboat.FredBoat;
 import fredboat.commandmeta.abs.Command;
-import fredboat.util.BotConstants;
+import fredboat.commandmeta.abs.IFunCommand;
+import fredboat.feature.togglz.FeatureFlags;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import org.apache.commons.lang3.StringEscapeUtils;
 
-public class TalkCommand extends Command {
+//TODO fix JCA and reintroduce this command
+public class TalkCommand extends Command implements IFunCommand {
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
-        String question = message.getRawContent().substring(BotConstants.DEFAULT_BOT_PREFIX.length() + 5);
+        String question = message.getRawContent().substring(Config.CONFIG.getPrefix().length() + 5);
 
         talk(invoker, channel, question);
     }
 
     public static void talk(Member member, TextChannel channel, String question) {
-        //Clerverbot integration
-        String response = FredBoat.jca.getResponse(question);
-        response = member.getEffectiveName() + ": " + StringEscapeUtils.unescapeHtml4(response);
-        channel.sendMessage(response).queue();
+        //Cleverbot integration
+        if (FeatureFlags.CHATBOT.isActive()) {
+            String response = FredBoat.jca.getResponse(question);
+            response = member.getEffectiveName() + ": " + StringEscapeUtils.unescapeHtml4(response);
+            channel.sendMessage(response).queue();
+        }
     }
 
+    @Override
+    public String help(Guild guild) {
+        return "{0}{1} <text> OR @{2} <text>\n#Talk to the Cleverbot AI.";
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,9 @@
 
 package fredboat.command.fun;
 
-public class DogCommand extends TextCommand {
+import fredboat.commandmeta.abs.IFunCommand;
+
+public class DogCommand extends TextCommand implements IFunCommand {
 
     public static final String DOG
             = "┈┈╱▏┈┈┈┈┈╱▔▔▔▔╲┈ \n"
@@ -42,6 +44,7 @@ public class DogCommand extends TextCommand {
     public DogCommand() {
         super(DOG);
     }
+
 }
 
 //gib pat to me now

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,27 +25,43 @@
 
 package fredboat.api;
 
+import fredboat.Config;
 import fredboat.FredBoat;
 import fredboat.audio.PlayerRegistry;
+import fredboat.db.entity.UConfig;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Spark;
-import org.eclipse.jetty.server.Server;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class API {
 
     private static final Logger log = LoggerFactory.getLogger(API.class);
 
-    private static final int PORT = Integer.valueOf(System.getenv("PORT"));
+    private static final int PORT = 1356;
 
     private API() {}
 
     public static void start() {
+        if(!Config.CONFIG.isRestServerEnabled()) {
+            log.warn("Rest server is not enabled. Skipping Spark ignition!");
+            return;
+        }
+
         log.info("Igniting Spark API on port: " + PORT);
 
         Spark.port(PORT);
+
+        Spark.before((request, response) -> {
+            log.info(request.requestMethod() + " " + request.pathInfo());
+            response.header("Access-Control-Allow-Origin", "*");
+            response.type("application/json");
+        });
 
         Spark.get("/stats", (req, res) -> {
             res.type("application/json");
@@ -53,27 +69,51 @@ public class API {
             JSONObject root = new JSONObject();
             JSONArray a = new JSONArray();
 
-            for(FredBoat fb : FredBoat.getShards()) {
+            //make a copy to avoid concurrent modification errors
+            List<FredBoat> shards = new ArrayList<>(FredBoat.getShards());
+            for (FredBoat fb : shards) {
                 JSONObject fbStats = new JSONObject();
-                fbStats.put("id", fb.getShardInfo().getShardId());
-                fbStats.put("guilds", fb.getJda().getGuilds().size());
-                fbStats.put("users", fb.getJda().getUsers().size());
-                fbStats.put("status", fb.getJda().getStatus());
+                fbStats.put("id", fb.getShardInfo().getShardId())
+                        .put("guilds", fb.getGuildCount())
+                        .put("users", fb.getUserCount())
+                        .put("status", fb.getJda().getStatus());
 
                 a.put(fbStats);
             }
 
             JSONObject g = new JSONObject();
-            g.put("playingPlayers", PlayerRegistry.getPlayingPlayers().size());
-            g.put("totalPlayers", PlayerRegistry.getRegistry().size());
-            g.put("distribution", FredBoat.distribution);
-            g.put("guilds", FredBoat.getAllGuilds().size());
-            g.put("users", FredBoat.getAllUsersAsMap().size());
+            g.put("playingPlayers", PlayerRegistry.getPlayingPlayers().size())
+                    .put("totalPlayers", PlayerRegistry.getRegistry().size())
+                    .put("distribution", Config.CONFIG.getDistribution())
+                    .put("guilds", FredBoat.countAllGuilds())
+                    .put("users", FredBoat.countAllUniqueUsers());
 
             root.put("shards", a);
             root.put("global", g);
 
             return root;
+        });
+
+        Spark.post("/callback", (request, response) -> {
+            JSONObject out = new JSONObject();
+            JSONObject body = new JSONObject(request.body());
+
+            UConfig uconfig = OAuthManager.handleCallback(body.getString("code"));
+            out.put("bearer", uconfig.getBearer())
+                    .put("refresh", uconfig.getRefresh())
+                    .put("userId", uconfig.getUserId());
+
+            return out;
+        });
+
+
+        /* Exception handling */
+        Spark.exception(Exception.class, (e, request, response) -> {
+            log.error(request.requestMethod() + " " + request.pathInfo(), e);
+
+            response.body(ExceptionUtils.getStackTrace(e));
+            response.type("text/plain");
+            response.status(500);
         });
     }
 

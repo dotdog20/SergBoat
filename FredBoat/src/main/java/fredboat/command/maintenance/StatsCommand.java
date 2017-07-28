@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,10 +25,13 @@
 
 package fredboat.command.maintenance;
 
+import fredboat.Config;
 import fredboat.FredBoat;
 import fredboat.audio.PlayerRegistry;
 import fredboat.commandmeta.CommandManager;
 import fredboat.commandmeta.abs.Command;
+import fredboat.commandmeta.abs.IMaintenanceCommand;
+import fredboat.feature.I18n;
 import fredboat.util.DiscordUtil;
 import fredboat.util.TextUtils;
 import net.dv8tion.jda.core.JDAInfo;
@@ -37,7 +40,9 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
-public class StatsCommand extends Command {
+import java.text.MessageFormat;
+
+public class StatsCommand extends Command implements IMaintenanceCommand {
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
@@ -46,15 +51,16 @@ public class StatsCommand extends Command {
         int hours = (int) ((totalSecs / (60 * 60)) % 24);
         int mins = (int) ((totalSecs / 60) % 60);
         int secs = (int) (totalSecs % 60);
+        
+        String str = MessageFormat.format(
+                I18n.get(guild).getString("statsParagraph"),
+                days, hours, mins, secs, CommandManager.commandsExecuted.get() - 1)
+                + "\n";
 
-        String str = " This bot has been running for "
-                + days + " days, "
-                + hours + " hours, "
-                + mins + " minutes and "
-                + secs + " seconds.\n"
-                + "This shard has executed " + (CommandManager.commandsExecuted - 1) + " commands this session.\n";
+        str = MessageFormat.format(I18n.get(guild).getString("statsRate"), str, (float) (CommandManager.commandsExecuted.get() - 1) / ((float) totalSecs / (float) (60 * 60)));
 
-        str = str + "That's a rate of " + (float) (CommandManager.commandsExecuted - 1) / ((float) totalSecs / (float) (60 * 60)) + " commands per hour\n\n```";
+        str = str + "\n\n```";
+
         str = str + "Reserved memory:                " + Runtime.getRuntime().totalMemory() / 1000000 + "MB\n";
         str = str + "-> Of which is used:            " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000000 + "MB\n";
         str = str + "-> Of which is free:            " + Runtime.getRuntime().freeMemory() / 1000000 + "MB\n";
@@ -63,12 +69,12 @@ public class StatsCommand extends Command {
         str = str + "\n----------\n\n";
 
         str = str + "Sharding:                       " + FredBoat.getInstance(guild.getJDA()).getShardInfo().getShardString() + "\n";
-        if(DiscordUtil.isMusicBot()){
-            str = str + "Players playing (this shard):   " + PlayerRegistry.getPlayingPlayers().size() + "\n";
+        if (DiscordUtil.isMusicBot()) {
+            str = str + "Players playing:                " + PlayerRegistry.getPlayingPlayers().size() + "\n";
         }
-        str = str + "Known servers:                  " + FredBoat.getAllGuilds().size() + "\n";
-        str = str + "Known users in servers:         " + FredBoat.getAllUsersAsMap().size() + "\n";
-        str = str + "Distribution:                   " + FredBoat.distribution + "\n";
+        str = str + "Known servers:                  " + FredBoat.countAllGuilds() + "\n";
+        str = str + "Known users in servers:         " + FredBoat.countAllUniqueUsers() + "\n";
+        str = str + "Distribution:                   " + Config.CONFIG.getDistribution() + "\n";
         str = str + "JDA responses total:            " + guild.getJDA().getResponseTotal() + "\n";
         str = str + "JDA version:                    " + JDAInfo.VERSION;
 
@@ -77,4 +83,8 @@ public class StatsCommand extends Command {
         channel.sendMessage(TextUtils.prefaceWithName(invoker, str)).queue();
     }
 
+    @Override
+    public String help(Guild guild) {
+        return "{0}{1}\n#Show some statistics about this bot.";
+    }
 }

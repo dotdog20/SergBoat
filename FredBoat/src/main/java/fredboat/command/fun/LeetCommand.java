@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,9 +27,10 @@ package fredboat.command.fun;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import fredboat.FredBoat;
+import fredboat.Config;
+import fredboat.command.util.HelpCommand;
 import fredboat.commandmeta.abs.Command;
-import fredboat.commandmeta.abs.ICommand;
+import fredboat.commandmeta.abs.IFunCommand;
 import fredboat.event.EventListenerBoat;
 import fredboat.util.TextUtils;
 import net.dv8tion.jda.core.entities.Guild;
@@ -45,7 +46,8 @@ import java.net.URLEncoder;
  *
  * @author frederik
  */
-public class LeetCommand extends Command implements ICommand {
+//TODO fix the API calls and reintroduce this command
+public class LeetCommand extends Command implements IFunCommand {
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
@@ -53,7 +55,8 @@ public class LeetCommand extends Command implements ICommand {
         channel.sendTyping().queue();
 
         if(args.length < 2) {
-            channel.sendMessage("Proper usage: ;;leet <text>").queue();
+            String command = args[0].substring(Config.CONFIG.getPrefix().length());
+            HelpCommand.sendFormattedCommandHelp(guild, channel, invoker, command);
             return;
         }
 
@@ -62,7 +65,7 @@ public class LeetCommand extends Command implements ICommand {
         }
         res = res.substring(1);
         try {
-            res = Unirest.get("https://montanaflynn-l33t-sp34k.p.mashape.com/encode?text=" + URLEncoder.encode(res, "UTF-8").replace("+", "%20")).header("X-Mashape-Key", FredBoat.mashapeKey).asString().getBody();
+            res = Unirest.get("https://montanaflynn-l33t-sp34k.p.mashape.com/encode?text=" + URLEncoder.encode(res, "UTF-8").replace("+", "%20")).header("X-Mashape-Key", Config.CONFIG.getMashapeKey()).asString().getBody();
         } catch (UnirestException ex) {
             Message myMsg = TextUtils.replyWithName(channel, invoker, " Could not connect to API! "+ex.getMessage());
             return;
@@ -76,7 +79,11 @@ public class LeetCommand extends Command implements ICommand {
             throw new RuntimeException(e);
         }
 
-        EventListenerBoat.messagesToDeleteIfIdDeleted.put(message.getId(), myMsg);
+        EventListenerBoat.messagesToDeleteIfIdDeleted.put(message.getId(), myMsg.getId());
     }
-    
+
+    @Override
+    public String help(Guild guild) {
+        return "{0}{1} <text>\n#Make you sound like a script kiddie.";
+    }
 }

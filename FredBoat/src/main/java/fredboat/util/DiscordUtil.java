@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,32 +27,66 @@ package fredboat.util;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import fredboat.FredBoat;
+import fredboat.Config;
+import fredboat.feature.I18n;
+import fredboat.shared.constant.BotConstants;
 import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDAInfo;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.requests.*;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
+import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.List;
 
 public class DiscordUtil {
+
+    private static final Logger log = LoggerFactory.getLogger(DiscordUtil.class);
+    private static final String USER_AGENT = "FredBoat DiscordBot (https://github.com/Frederikam/FredBoat, 1.0)";
+
+    private static String cachedOwnerId = null;
 
     private DiscordUtil() {
     }
 
     public static boolean isMainBot() {
-        return (FredBoat.getScopes() & 0x100) != 0;
+        return isMainBot(Config.CONFIG);
     }
 
     public static boolean isMusicBot() {
-        return (FredBoat.getScopes() & 0x010) != 0;
+        return isMusicBot(Config.CONFIG);
     }
 
     public static boolean isSelfBot() {
-        return (FredBoat.getScopes() & 0x001) != 0;
+        return isSelfBot(Config.CONFIG);
+    }
+
+    public static boolean isMainBot(Config conf) {
+        return (conf.getScope() & 0x100) != 0;
+    }
+
+    public static boolean isMusicBot(Config conf) {
+        return (conf.getScope() & 0x010) != 0;
+    }
+
+    public static boolean isSelfBot(Config conf) {
+        return (conf.getScope() & 0x001) != 0;
+    }
+
+    public static String getOwnerId(JDA jda) {
+        if (cachedOwnerId != null) return cachedOwnerId;
+
+        try {
+            cachedOwnerId = getApplicationInfo(jda.getToken().substring(4)).getJSONObject("owner").getString("id");
+        } catch (UnirestException e) {
+            throw new RuntimeException(e);
+        }
+
+        return cachedOwnerId;
     }
 
     public static boolean isMainBotPresent(Guild guild) {
@@ -73,16 +107,20 @@ public class DiscordUtil {
         return other != null && guild.getMember(other) != null && guild.getMember(other).getOnlineStatus() == OnlineStatus.ONLINE;
     }
 
-    public static boolean isUserBotCommander(Guild guild, User user) {
-        List<Role> roles = guild.getMember(user).getRoles();
+    public static int getHighestRolePosition(Member member) {
+        List<Role> roles = member.getRoles();
+
+        if (roles.isEmpty()) return -1;
+
+        Role top = roles.get(0);
 
         for (Role r : roles) {
-            if (r.getName().equals("Owner")) {
-                return true;
+            if (r.getPosition() > top.getPosition()) {
+                top = r;
             }
         }
 
-        return false;
+        return top.getPosition();
     }
 
     public static void sendShardlessMessage(String channel, Message msg) {
@@ -106,11 +144,57 @@ public class DiscordUtil {
     public static int getRecommendedShardCount(String token) throws UnirestException {
         return Unirest.get(Requester.DISCORD_API_PREFIX + "gateway/bot")
                 .header("Authorization", "Bot " + token)
-                .header("User-agent", "FredBoat DiscordBot (https://github.com/Frederikam/FredBoat, " + JDAInfo.VERSION + ")")
+                .header("User-agent", USER_AGENT)
                 .asJson()
                 .getBody()
                 .getObject()
                 .getInt("shards");
     }
 
+    public static User getUserFromBearer(JDA jda, String token) {
+        try {
+            JSONObject user = Unirest.get(Requester.DISCORD_API_PREFIX + "/users/@me")
+                    .header("Authorization", "Bearer " + token)
+                    .header("User-agent", USER_AGENT)
+                    .asJson()
+                    .getBody()
+                    .getObject();
+
+            if (user.has("id")) {
+                return jda.retrieveUserById(user.getString("id")).complete(true);
+            }
+        } catch (UnirestException | RateLimitedException ignored) {
+        }
+
+        return null;
+    }
+
+    // https://discordapp.com/developers/docs/topics/oauth2
+    @Deprecated
+    public static JSONObject getApplicationInfo(String token) throws UnirestException {
+        return Unirest.get(Requester.DISCORD_API_PREFIX + "/oauth2/applications/@me")
+                .header("Authorization", "Bot " + token)
+                .header("User-agent", USER_AGENT)
+                .asJson()
+                .getBody()
+                .getObject();
+    }
+
+    // ########## Moderation related helper functions
+    public static String getReasonForModAction(String[] commandArgs, Guild guild) {
+        String r = null;
+        if (commandArgs.length > 2) {
+            r = String.join(" ", Arrays.copyOfRange(commandArgs, 2, commandArgs.length));
+        }
+
+        return I18n.get(guild).getString("modReason") + ": " + (r != null ? r : "No reason provided.");
+    }
+
+    public static String formatReasonForAuditLog(String plainReason, Guild guild, Member invoker) {
+        String i18nAuditLogMessage = MessageFormat.format(I18n.get(guild).getString("modAuditLogMessage"),
+                invoker.getEffectiveName(), invoker.getUser().getDiscriminator(), invoker.getUser().getId()) + ", ";
+        int auditLogMaxLength = 512 - i18nAuditLogMessage.length(); //512 is a hard limit by discord
+        return i18nAuditLogMessage + (plainReason.length() > auditLogMaxLength ?
+                plainReason.substring(0, auditLogMaxLength) : plainReason);
+    }
 }

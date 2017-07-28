@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,48 +26,66 @@
 package fredboat.commandmeta;
 
 import fredboat.commandmeta.abs.Command;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class CommandRegistry {
 
-    public static HashMap<String, CommandEntry> registry = new HashMap<>();
+    private static HashMap<String, CommandEntry> registry = new HashMap<>();
 
-    public static void registerCommand(int scope, String name, Command command) {
-        CommandEntry entry = new CommandEntry(scope, command, name);
+    public static void registerCommand(String name, Command command, String... aliases) {
+        CommandEntry entry = new CommandEntry(command, name);
         registry.put(name, entry);
-    }
-    
-    public static void registerAlias(String command, String alias) {
-        registry.put(alias, registry.get(command));
+        for (String alias : aliases) {
+            registry.put(alias, entry);
+        }
     }
 
-    public static CommandEntry getCommandFromScope(int scope, String name) {
-        CommandEntry entry = registry.get(name);
-        if (entry != null && (entry.getScope() & scope) != 0) {
-            return entry;
-        }
-        return null;
+    public static CommandEntry getCommand(String name) {
+        return registry.get(name);
+    }
+
+    public static int getSize() {
+        return registry.size();
+    }
+
+    public static Set<String> getRegisteredCommandsAndAliases() {
+        return registry.keySet();
+    }
+
+    public static void removeCommand(String name) {
+        CommandEntry entry = new CommandEntry(new Command() {
+            @Override
+            public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
+                channel.sendMessage("This command is temporarily disabled");
+            }
+
+            @Override
+            public String help(Guild guild) {
+                return "Temporarily disabled command";
+            }
+        }, name);
+
+        registry.put(name, entry);
     }
 
     public static class CommandEntry {
 
-        public int scope;
         public Command command;
         public String name;
 
-        public CommandEntry(int scope, Command command, String name) {
-            this.scope = scope;
+        CommandEntry(Command command, String name) {
             this.command = command;
             this.name = name;
         }
 
         public String getName() {
             return name;
-        }
-
-        public int getScope() {
-            return scope;
         }
 
         public void setCommand(Command command) {

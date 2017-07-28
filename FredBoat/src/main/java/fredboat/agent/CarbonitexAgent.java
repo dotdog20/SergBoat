@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,9 @@
 package fredboat.agent;
 
 import com.mashape.unirest.http.Unirest;
+import fredboat.Config;
 import fredboat.FredBoat;
-import fredboat.util.DistributionEnum;
+import net.dv8tion.jda.core.JDA;
 import org.slf4j.LoggerFactory;
 
 public class CarbonitexAgent extends Thread {
@@ -37,16 +38,14 @@ public class CarbonitexAgent extends Thread {
     private final String key;
 
     public CarbonitexAgent(String key) {
+        super(CarbonitexAgent.class.getSimpleName());
         this.key = key;
     }
 
     @Override
     public void run() {
-        if (FredBoat.distribution != DistributionEnum.MAIN) {
-            return;
-        }
-
         try {
+            //noinspection InfiniteLoopStatement
             while (true) {
                 synchronized (this) {
                     sendStats();
@@ -60,14 +59,26 @@ public class CarbonitexAgent extends Thread {
     }
 
     private void sendStats() {
+        for (FredBoat fb : FredBoat.getShards()) {
+            if(fb.getJda().getStatus() !=  JDA.Status.CONNECTED) {
+                log.warn("Skipping posting stats because not all shards are online!");
+                return;
+            }
+        }
+
+        if (FredBoat.getShards().size() < Config.CONFIG.getNumShards()) {
+            log.warn("Skipping posting stats because not all shards initialized!");
+            return;
+        }
+
         try {
             final String response = Unirest.post("https://www.carbonitex.net/discord/data/botdata.php")
                     .field("key", key)
-                    .field("servercount", FredBoat.getAllGuilds().size())
+                    .field("servercount", FredBoat.countAllGuilds())
                     .asString().getBody();
-            log.info("Successfully posted the botdata to carbonitex.com: " + response);
+            log.info("Successfully posted the bot data to carbonitex.com: " + response);
         } catch (Exception e) {
-            log.error("An error occured while posting the botdata to carbonitex.com", e);
+            log.error("An error occurred while posting the bot data to carbonitex.com", e);
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,9 @@
 package fredboat.command.admin;
 
 import fredboat.commandmeta.abs.Command;
-import fredboat.commandmeta.abs.ICommandOwnerRestricted;
+import fredboat.commandmeta.abs.ICommand;
+import fredboat.commandmeta.abs.ICommandRestricted;
+import fredboat.perms.PermissionLevel;
 import fredboat.util.log.SLF4JInputStreamErrorLogger;
 import fredboat.util.log.SLF4JInputStreamLogger;
 import net.dv8tion.jda.core.entities.Guild;
@@ -41,7 +43,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-public class CompileCommand extends Command implements ICommandOwnerRestricted {
+public class CompileCommand extends Command implements ICommand, ICommandRestricted {
 
     private static final Logger log = LoggerFactory.getLogger(CompileCommand.class);
 
@@ -57,6 +59,10 @@ public class CompileCommand extends Command implements ICommandOwnerRestricted {
             if (args.length > 1) {
                 branch = args[1];
             }
+            String githubUser = "Frederikam";
+            if (args.length > 2) {
+                githubUser = args[2];
+            }
 
             //Clear any old update folder if it is still present
             try {
@@ -66,7 +72,7 @@ public class CompileCommand extends Command implements ICommandOwnerRestricted {
                 throw new RuntimeException(ex);
             }
 
-            Process gitClone = rt.exec("git clone https://github.com/dotdog20/sergboat.git --branch " + branch + " --single-branch update");
+            Process gitClone = rt.exec("git clone https://github.com/" + githubUser + "/FredBoat.git --branch " + branch + " --recursive --single-branch update");
             new SLF4JInputStreamLogger(log, gitClone.getInputStream()).start();
             new SLF4JInputStreamErrorLogger(log, gitClone.getInputStream()).start();
 
@@ -101,5 +107,15 @@ public class CompileCommand extends Command implements ICommandOwnerRestricted {
         } catch (InterruptedException | IOException | RateLimitedException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    @Override
+    public String help(Guild guild) {
+        return "{0}{1} [branch [repo]]\n#Update the bot by checking out the provided branch from the provided github repo and compiling it. Default github repo is Frederikam, default branch is master. Does not restart the bot.";
+    }
+
+    @Override
+    public PermissionLevel getMinimumPerms() {
+        return PermissionLevel.BOT_OWNER;
     }
 }

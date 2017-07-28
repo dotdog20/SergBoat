@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,6 +38,7 @@ public class SLF4JInputStreamLogger extends Thread {
     final BufferedReader br;
 
     public SLF4JInputStreamLogger(Logger log, InputStream is) {
+        super(SLF4JInputStreamLogger.class.getSimpleName());
         this.log = log;
         this.br = new BufferedReader(new InputStreamReader(is));
         setDaemon(true);

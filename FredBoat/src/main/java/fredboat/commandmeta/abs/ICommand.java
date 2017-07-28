@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,4 +34,9 @@ public interface ICommand {
 
     public abstract void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args);
 
+    /**
+     * @param guild Guild where the help is going to be posted to for i18n the help string; null value should be fine for a default language
+     * @return an unformatted help string: convention {0} = prefix, {1} = command, fill these in by the running bot, more parameters can be present
+     */
+    String help(Guild guild);
 }

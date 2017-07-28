@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,16 +26,21 @@
 package fredboat.command.fun;
 
 import fredboat.commandmeta.abs.Command;
-import fredboat.commandmeta.abs.ICommand;
+import fredboat.commandmeta.abs.IFunCommand;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
-public class RiotCommand extends Command implements ICommand {
+public class RiotCommand extends Command implements IFunCommand {
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
         channel.sendMessage("ヽ༼ຈل͜ຈ༽ﾉ **" + message.getContent().replaceFirst("\\S*\\s+", "").toUpperCase()+"** ヽ༼ຈل͜ຈ༽ﾉ").queue();
+    }
+
+    @Override
+    public String help(Guild guild) {
+        return "{0}{1} <text>\n#Start a riot.";
     }
 }

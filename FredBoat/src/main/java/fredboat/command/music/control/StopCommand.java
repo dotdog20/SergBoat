@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,43 +27,60 @@ package fredboat.command.music.control;
 
 import fredboat.audio.GuildPlayer;
 import fredboat.audio.PlayerRegistry;
+import fredboat.audio.queue.AudioTrackContext;
 import fredboat.commandmeta.abs.Command;
+import fredboat.commandmeta.abs.ICommandRestricted;
 import fredboat.commandmeta.abs.IMusicCommand;
-import fredboat.util.BotConstants;
-import net.dv8tion.jda.core.Permission;
+import fredboat.feature.I18n;
+import fredboat.perms.PermissionLevel;
+import fredboat.util.TextUtils;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.utils.PermissionUtil;
+import org.apache.commons.lang3.tuple.Pair;
 
-public class StopCommand extends Command implements IMusicCommand {
+import java.text.MessageFormat;
+import java.util.List;
+
+public class StopCommand extends Command implements IMusicCommand, ICommandRestricted {
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
-        if (PermissionUtil.checkPermission(channel, invoker, Permission.MESSAGE_MANAGE) || invoker.getUser().getId().equals(BotConstants.OWNER_ID)) {
-            GuildPlayer player = PlayerRegistry.get(guild);
-            player.setCurrentTC(channel);
-            int count = player.getRemainingTracks().size();
+        GuildPlayer player = PlayerRegistry.get(guild);
+        player.setCurrentTC(channel);
+        List<AudioTrackContext> tracks = player.getRemainingTracks();
 
-            player.clear();
-            player.skip();
-
-            switch (count) {
+        Pair<Boolean, String> pair = player.canMemberSkipTracks(channel, invoker, tracks);
+        //skipping allowed
+        if(pair.getLeft()) {
+            player.stop();
+            switch (tracks.size()) {
                 case 0:
-                    channel.sendMessage("The queue was already empty.").queue();
+                    channel.sendMessage(I18n.get(guild).getString("stopAlreadyEmpty")).queue();
                     break;
                 case 1:
-                    channel.sendMessage("The queue has been emptied, `1` song has been removed.").queue();
+                    channel.sendMessage(I18n.get(guild).getString("stopEmptyOne")).queue();
                     break;
                 default:
-                    channel.sendMessage("The queue has been emptied, `" + count + "` songs have been removed.").queue();
+                    channel.sendMessage(MessageFormat.format(I18n.get(guild).getString("stopEmptySeveral"), tracks.size())).queue();
                     break;
             }
             player.leaveVoiceChannelRequest(channel, true);
         } else {
-            channel.sendMessage("In order to prevent abuse, this command is only available to those who can manage messages.").queue();
+            //invoker is not allowed to skip all doz track
+            TextUtils.replyWithName(channel, invoker, pair.getRight());
         }
     }
 
+    @Override
+    public String help(Guild guild) {
+        String usage = "{0}{1}\n#";
+        return usage + I18n.get(guild).getString("helpStopCommand");
+    }
+
+    @Override
+    public PermissionLevel getMinimumPerms() {
+        return PermissionLevel.DJ;
+    }
 }

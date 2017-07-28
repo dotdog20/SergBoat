@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@ package fredboat;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,8 +42,8 @@ public class FredBoatClient extends FredBoat {
             while (!success) {
                 try {
                     jda = new JDABuilder(AccountType.CLIENT)
-                            .addListener(listenerSelf)
-                            .setToken(clientToken)
+                            .addEventListener(listenerSelf)
+                            .setToken(null)//todo: remove
                             .setEnableShutdownHook(false)
                             .buildAsync();
 
@@ -57,4 +58,8 @@ public class FredBoatClient extends FredBoat {
         }
     }
 
+    @Override
+    public void revive() {
+        throw new NotImplementedException("Client shards can't be revived");
+    }
 }

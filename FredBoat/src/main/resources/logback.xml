@@ -1,7 +1,7 @@
 <!--
   ~ MIT License
   ~
-  ~ Copyright (c) 2016 Frederik Ar. Mikkelsen
+  ~ Copyright (c) 2017 Frederik Ar. Mikkelsen
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy
   ~ of this software and associated documentation files (the "Software"), to deal
@@ -51,7 +51,7 @@
             <pattern>[%d] [ %-5level] [%thread] %logger{35}: %msg%n</pattern>
         </encoder>
     </appender>
-    
+
     <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/error.log</file>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016 Frederik Ar. Mikkelsen
+ * Copyright (c) 2017 Frederik Ar. Mikkelsen
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,5 +30,8 @@ public class MessagingException extends RuntimeException {
     public MessagingException(String str) {
         super(str);
     }
-    
+
+    public MessagingException(String str, Throwable cause) {
+        super(str, cause);
+    }
 }
