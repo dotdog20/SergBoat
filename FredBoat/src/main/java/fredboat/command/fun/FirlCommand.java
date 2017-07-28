@@ -52,7 +52,7 @@ public class FirlCommand extends Command {
 
     private static final Logger log = LoggerFactory.getLogger(ArchCommand.class);
     private static final Pattern IMAGE_PATTERN = Pattern.compile("\"url\":\"([^\"]+)");
-    private static final String BASE_URL = "www.reddit.com/r/furry_irl/random.json?limit=1";
+    private static final String BASE_URL = "https://www.reddit.com/r/furry_irl/random.json?limit=1";
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
