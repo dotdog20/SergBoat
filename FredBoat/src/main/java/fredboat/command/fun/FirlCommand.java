@@ -59,7 +59,7 @@ public class FirlCommand extends Command {
         channel.sendTyping().queue();
         try {
 
-            response = Unirest.get("http://www.reddit.com/api/v1/access").basicAuth("QjIc95eOrpudxw", "GTLmC3a0-gVbDtuDMUqx4mETezs").asJson();
+          //  response = Unirest.get("http://www.reddit.com/api/v1/access").basicAuth("QjIc95eOrpudxw", "GTLmC3a0-gVbDtuDMUqx4mETezs").asJson();
             String str = Unirest.get(BASE_URL).asString().getBody();
             Matcher m = IMAGE_PATTERN.matcher(str);
 
