@@ -165,7 +165,7 @@ public class CommandInitializer {
         CommandRegistry.registerCommand(0x101, "razor", new RemoteFileCommand("https://pbs.twimg.com/profile_images/694250556500660224/GZWU-Au7.jpg"));
         CommandRegistry.registerCommand(0x101, "burd", new RemoteFileCommand("http://a.deviantart.net/avatars/b/u/burdplz.png"));
         CommandRegistry.registerCommand(0x101, "razors", new RemoteFileCommand("https://cdn.discordapp.com/attachments/268942002937266177/277239425350631426/31e6f6df-86dc-4509-a5f3-9781b337dbd28794698958514696739.jpg"));
-        
+
 
 
 
@@ -208,7 +208,6 @@ public class CommandInitializer {
         CommandRegistry.registerAlias("cooldog", "dogmeme");
         CommandRegistry.registerCommand(0x101, "lood", new TextCommand("T-that's l-lewd, baka!!!"));
         CommandRegistry.registerAlias("lood", "lewd");
-        CommandRegistry.registerCommand(0x101, "spam", new SpamCommand());
 
         CommandRegistry.registerCommand(0x101, "github", new TextCommand("https://github.com/Frederikam"));
         CommandRegistry.registerCommand(0x101, "repo", new TextCommand("https://github.com/Frederikam/FredBoat"));
