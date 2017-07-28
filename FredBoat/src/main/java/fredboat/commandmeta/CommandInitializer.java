@@ -75,11 +75,6 @@ public class CommandInitializer {
         CommandRegistry.registerAlias("s", "shrug");
         CommandRegistry.registerCommand(0x101, "lenny", new TextCommand("( ͡° ͜ʖ ͡°)"));
         CommandRegistry.registerCommand(0x101, "useless", new TextCommand("This command is useless."));
-        CommandRegistry.registerCommand(0x101, "e621", new TextCommand("```e621: Monosodium Glutamate (MSG) | Flavor Enhancer```"));
-        CommandRegistry.registerCommand(0x101, "e926", new TextCommand("```e926: Chlorine Dioxide | Bleach```"));
-        CommandRegistry.registerCommand(0x101, "razor", new RemoteFileCommand("https://pbs.twimg.com/profile_images/694250556500660224/GZWU-Au7.jpg"));
-        CommandRegistry.registerCommand(0x101, "burd", new RemoteFileCommand("http://a.deviantart.net/avatars/b/u/burdplz.png"));
-        CommandRegistry.registerCommand(0x101, "razors", new RemoteFileCommand("https://cdn.discordapp.com/attachments/268942002937266177/277239425350631426/31e6f6df-86dc-4509-a5f3-9781b337dbd28794698958514696739.jpg"));
         CommandRegistry.registerCommand(0x101, "clear", new ClearCommand());
         CommandRegistry.registerCommand(0x101, "talk", new TalkCommand());
         CommandRegistry.registerCommand(0x101, "dump", new DumpCommand());
@@ -147,30 +142,47 @@ public class CommandInitializer {
         /* Other Anime Discord, Sergi memes or any other memes */
         CommandRegistry.registerCommand(0x101, "teemo", new RemoteFileCommand("http://orig06.deviantart.net/cc84/f/2012/218/b/f/teemo_render__default_skin__by_aurablade-d59zqef.png"));
 
+
+
+
+
         CommandRegistry.registerCommand(0x101, "nevrean", new NevreanCommand());
-
-        CommandRegistry.registerCommand(0x101, "religion", new RemoteFileCommand("http://i0.kym-cdn.com/photos/images/original/001/221/803/543.jpg"));
-        CommandRegistry.registerCommand(0x101, "same", new RemoteFileCommand("http://i1.kym-cdn.com/photos/images/original/001/223/056/8ee.gif"));
-        CommandRegistry.registerCommand(0x101, "dove", new RemoteFileCommand("http://i3.kym-cdn.com/photos/images/original/001/221/963/30d.gif"));
-
+        CommandRegistry.registerCommand(0x101, "firl", new FirlCommand());
+        CommandRegistry.registerCommand(0x101, "arch", new ArchCommand());
         CommandRegistry.registerCommand(0x101, "cheese", new RemoteFileCommand("https://www.weasyl.com/%7Escritch/submissions/252410/ded7d1b47620a488bbebbae6402fcb5186dc6ee3c8b5704168beb43d80612f2a/scritch-ol-cheese-wedge-head.jpg"));
         CommandRegistry.registerCommand(0x101, "whats", new RemoteFileCommand("https://hastebin.com/raw/pafebusuni.txt"));
         CommandRegistry.registerCommand(0x101, "serg", new TextCommand("```The Sergal (サーガル Sāgaru), is a fictional alien species created by Mick39. They belong to the Eltus race, alongside the Nevrean and Agudner in the Vilous universe, a science-fantasy world created by Mick.```"));
         CommandRegistry.registerCommand(0x101, "sergal", new SergalCommand());
-        CommandRegistry.registerCommand(0x101, "random", new RemoteFileCommand("https://cdn.discordapp.com/attachments/268942002937266177/274330904992808980/a643fc5d-15ab-41cf-8353-fb7cf893fcf68949268650809542783.png"));
-        CommandRegistry.registerCommand(0x101, "arch", new ArchCommand());
+        CommandRegistry.registerCommand(0x101, "religion", new RemoteFileCommand("http://i0.kym-cdn.com/photos/images/original/001/221/803/543.jpg"));
         CommandRegistry.registerCommand(0x101, "da", new DACommand());
         CommandRegistry.registerCommand(0x101, "sergaln", new SergalnCommand());
         CommandRegistry.registerCommand(0x101, "sergals", new SergalsCommand());
+        CommandRegistry.registerCommand(0x101, "potoo", new PotooCommand());
+        CommandRegistry.registerCommand(0x101, "woof", new RemoteFileCommand("https://cdn.discordapp.com/attachments/262020093289037824/268502003792084995/images.png"));
+        CommandRegistry.registerCommand(0x101, "fluff", new RemoteFileCommand("http://i.imgur.com/IqJSbgK.jpg"));
+        CommandRegistry.registerCommand(0x101, "e621", new TextCommand("```e621: Monosodium Glutamate (MSG) | Flavor Enhancer```"));
+        CommandRegistry.registerCommand(0x101, "e926", new TextCommand("```e926: Chlorine Dioxide | Bleach```"));
+        CommandRegistry.registerCommand(0x101, "razor", new RemoteFileCommand("https://pbs.twimg.com/profile_images/694250556500660224/GZWU-Au7.jpg"));
+        CommandRegistry.registerCommand(0x101, "burd", new RemoteFileCommand("http://a.deviantart.net/avatars/b/u/burdplz.png"));
+        CommandRegistry.registerCommand(0x101, "razors", new RemoteFileCommand("https://cdn.discordapp.com/attachments/268942002937266177/277239425350631426/31e6f6df-86dc-4509-a5f3-9781b337dbd28794698958514696739.jpg"));
+        
+
+
+
+        CommandRegistry.registerCommand(0x101, "same", new RemoteFileCommand("http://i1.kym-cdn.com/photos/images/original/001/223/056/8ee.gif"));
+        CommandRegistry.registerCommand(0x101, "dove", new RemoteFileCommand("http://i3.kym-cdn.com/photos/images/original/001/221/963/30d.gif"));
+
+        CommandRegistry.registerCommand(0x101, "random", new RemoteFileCommand("https://cdn.discordapp.com/attachments/268942002937266177/274330904992808980/a643fc5d-15ab-41cf-8353-fb7cf893fcf68949268650809542783.png"));
+
+
         CommandRegistry.registerCommand(0x101, "e6", new E6Command());
         CommandRegistry.registerCommand(0x101, "potoo", new PotooCommand());
         CommandRegistry.registerCommand(0x101, "ram", new RemoteFileCommand("http://i.imgur.com/jeGVLk3.jpg"));
-        CommandRegistry.registerCommand(0x101, "fluff", new RemoteFileCommand("http://i.imgur.com/IqJSbgK.jpg"));
+
         CommandRegistry.registerCommand(0x101, "welcome", new RemoteFileCommand("http://i.imgur.com/yjpmmBk.gif"));
         CommandRegistry.registerCommand(0x101, "rude", new RemoteFileCommand("http://i.imgur.com/pUn7ijx.png"));
         CommandRegistry.registerCommand(0x101, "fuck", new RemoteFileCommand("http://i.imgur.com/1bllKNh.png"));
         CommandRegistry.registerCommand(0x101, "idc", new RemoteFileCommand("http://i.imgur.com/0ZPjpNg.png"));
-        CommandRegistry.registerCommand(0x101, "woof", new RemoteFileCommand("https://cdn.discordapp.com/attachments/262020093289037824/268502003792084995/images.png"));
         CommandRegistry.registerCommand(0x101, "beingraped", new RemoteFileCommand("http://i.imgur.com/dPsYRYV.png"));
         CommandRegistry.registerCommand(0x101, "anime", new RemoteFileCommand("https://cdn.discordapp.com/attachments/132490115137142784/177751190333816834/animeeee.png"));
         CommandRegistry.registerCommand(0x101, "wow", new RemoteFileCommand("http://img.prntscr.com/img?url=http://i.imgur.com/aexiMAG.png"));
