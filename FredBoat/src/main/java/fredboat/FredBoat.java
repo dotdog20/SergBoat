@@ -179,6 +179,7 @@ public abstract class FredBoat {
 
         //Commands
         if(Config.CONFIG.getDistribution() == DistributionEnum.DEVELOPMENT
+                || Config.CONFIG.getDistribution() == DistributionEnum.PATRON
                 || Config.CONFIG.getDistribution() == DistributionEnum.MAIN)
             MainCommandInitializer.initCommands();
 
