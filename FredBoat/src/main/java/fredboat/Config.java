@@ -141,8 +141,8 @@ public class Config {
             if (token != null) {
                 botToken = String.valueOf(System.getenv("TOKEN"));
             } else botToken = "";
-            spotifyId = (String) creds.getOrDefault("spotifyId", "");
-            spotifySecret = (String) creds.getOrDefault("spotifySecret", "");
+            spotifyId = String.valueOf(System.getenv("spotifyID"));
+            spotifySecret = String.valueOf(System.getenv("spotifySecret"));
 
             if (creds.containsKey("oauthSecret")) {
                 Map<String, Object> oas = (Map) creds.get("oauthSecret");
