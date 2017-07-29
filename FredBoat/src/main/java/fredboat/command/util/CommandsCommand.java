@@ -89,7 +89,7 @@ public class CommandsCommand extends Command implements IUtilCommand {
         String mod = "**" + I18n.get(guild).getString("commandsModeration") + ":** ";
         String maint = "**" + I18n.get(guild).getString("commandsMaintenance") + ":** ";
         String owner = "**" + I18n.get(guild).getString("commandsBotOwner") + ":** ";
-        String serg = "**" + I18n.get(guild).getString("commandsSerg") + ":**";
+        //String serg = "**" + I18n.get(guild).getString("commandsSerg") + ":**";
         for (String alias : sortedAliases) {
             Command c = CommandRegistry.getCommand(alias).command;
             String formattedAlias = "`" + alias + "` ";
