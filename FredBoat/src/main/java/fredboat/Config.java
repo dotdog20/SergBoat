@@ -155,7 +155,7 @@ public class Config {
                 ((List) gkeys).forEach((Object str) -> googleKeys.add((String) str));
             } else if (gkeys instanceof String) {
                 googleKeys.add(String.valueOf(System.getenv("GOOGLEKEY")));
-                log.info(String.valueOf(System.getenv("GOOGLEKEY"));
+                log.info(String.valueOf(System.getenv("GOOGLEKEY")));
             } else {
                 log.warn("No google API keys found. Some commands may not work, check the documentation.");
             }
