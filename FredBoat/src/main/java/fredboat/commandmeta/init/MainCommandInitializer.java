@@ -139,6 +139,7 @@ public class MainCommandInitializer {
 
         //Added commands from selfhost
         CommandRegistry.registerCommand("E9", new E9Command(), "e9", "E926", "e926");
+        CommandRegistry.registerCommand("E6", new E6Command(), "e6", "E621", "e621");
     }
 
 }
