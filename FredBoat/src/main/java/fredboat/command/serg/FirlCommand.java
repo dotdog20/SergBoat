@@ -70,7 +70,7 @@ public class FirlCommand extends Command {
 
         try {
 
-            String str = Unirest.get(finalstring).asString().getBody();;
+            String str = Unirest.get(base_url).asString().getBody();;
             Matcher m = IMAGE_PATTERN.matcher(str);
 
             if (!m.find()) {
