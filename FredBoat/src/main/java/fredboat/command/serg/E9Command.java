@@ -73,7 +73,7 @@ public class E9Command extends Command {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(BASE_URL);
             stringBuilder.append(args[1]);
-            stringBuilder.append(",-breasts,order:random");
+            stringBuilder.append(",-breasts,order:random,filesize:<8mb");
             String finalstring = stringBuilder.toString();
 
 
@@ -100,7 +100,7 @@ public class E9Command extends Command {
           throw new RuntimeException(e);
         }
         catch (ArrayIndexOutOfBoundsException e) {
-          String out = "``` Requires at least one tag from http://www.e926.net/tag/ up to a limit of ";
+          String out = "``` Requires at least one tag from http://www.e926.net/tag/ up to a limit of 2 (due to tag search limits) ```";
           TextUtils.replyWithName(channel, invoker, out);
         }
     }
