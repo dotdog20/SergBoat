@@ -73,7 +73,7 @@ public class E9Command extends Command {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(BASE_URL);
             stringBuilder.append(args[1]);
-            stringBuilder.append(",order:random,rating:s?limit=1");
+            stringBuilder.append(",-breasts,order:random,rating:s?limit=1");
             String finalstring = stringBuilder.toString();
 
 
@@ -91,8 +91,8 @@ public class E9Command extends Command {
 
             File tmp = CacheUtil.getImageFromURL(m.group(1));
             channel.sendFile(tmp, null).queue();
-            log.info("///////////////////" + m.group(1) + "////////////////////////////////");
-            channel.sendMessage(m.group(1)).queue();
+            //log.info("///////////////////" + m.group(1) + "////////////////////////////////");
+            //channel.sendMessage(m.group(1)).queue();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
