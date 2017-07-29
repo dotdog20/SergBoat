@@ -75,7 +75,7 @@ public class FirlCommand extends Command {
 
             if (!m.find()) {
                 //channel.sendMessage(MessageFormat.format(I18n.get(guild).getString("e926Fail"), BASE_URL)).queue();
-                log.info("str: " + m);
+                log.info("str: " + str);
                 log.info("finalsearchstring: " + BASE_URL);
                 //channel.sendMessage(str).queue();
                 //channel.sendMessage(finalstring).queue();
