@@ -69,7 +69,7 @@ public class E9Command extends Command {
         channel.sendTyping().queue();
 
         try {
-            String str = BASE_URL;
+            String str = Unirest.get(BASE_URL).asString().getBody();;
             Matcher m = IMAGE_PATTERN.matcher(str);
 
             if (!m.find()) {
@@ -87,6 +87,9 @@ public class E9Command extends Command {
             channel.sendMessage(m.group(1)).queue();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+        catch (UnirestException e) {
+          throw new RuntimeException(e);
         }
     }
 
