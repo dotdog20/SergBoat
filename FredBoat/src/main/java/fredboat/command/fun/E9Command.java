@@ -61,7 +61,7 @@ import fredboat.util.rest.CloudFlareScraper;
 public class E9Command extends Command {
 
     private static final Pattern IMAGE_PATTERN = Pattern.compile("file_url=\"([^\"]+)");
-    private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=,order:random,rating:s,";
+    private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=";
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(E9Command.class);
 
     @Override
@@ -73,7 +73,7 @@ public class E9Command extends Command {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(BASE_URL);
             stringBuilder.append(args[1]);
-            stringBuilder.append("?limit=1");
+            stringBuilder.append(",order:random,rating:s?limit=1");
             String finalstring = stringBuilder.toString();
 
 
