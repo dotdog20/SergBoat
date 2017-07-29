@@ -26,6 +26,7 @@ package fredboat.commandmeta.init;
 
 import fredboat.command.admin.*;
 import fredboat.command.fun.*;
+import fredboat.command.serg.*
 import fredboat.command.maintenance.*;
 import fredboat.command.moderation.ClearCommand;
 import fredboat.command.moderation.HardbanCommand;
