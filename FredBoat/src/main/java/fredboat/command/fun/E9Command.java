@@ -41,47 +41,50 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fredboat.FredBoat;
+import fredboat.feature.I18n;
+
+
+import fredboat.util.rest.CloudFlareScraper;
+
 public class E9Command extends Command {
 
+    private static final Pattern IMAGE_PATTERN = Pattern.compile("src=\"([^\"]+)");
     private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=-spread_legs,-breasts,order:random,rating:s,";
-    private static final Pattern IMAGE_PATTERN = Pattern.compile("\"file_url\":\"([^\"]+)");
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(E9Command.class);
+
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
-      try{
-
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(BASE_URL);
-        stringBuilder.append(args[1]);
-        stringBuilder.append("&limit=1");
-        log.info(args[1]);
-        String finalString = stringBuilder.toString();
-
-
-
-        //channel.sendMessage(finalString);
-        String str = Unirest.get(finalString).asString().getBody();
-        Matcher m = IMAGE_PATTERN.matcher(str);
-        //File tmp = CacheUtil.getImageFromURL(m.group(1));
-        channel.sendMessage(m.group(1));
-      //  channel.sendFile(tmp, null).queue();
-
-        log.info("E6: " + finalString);
-      } catch (UnirestException e) {
-          channel.sendMessage("Failed to connect to " + BASE_URL).queue();
-      } catch (Exception e) {
-          channel.sendMessage("Failed to connect to").queue();
-      }
-
+        channel.sendTyping().queue();
+        FredBoat.executor.submit(() -> postE9(guild, channel));
     }
+
+    private void postE9(Guild guild, TextChannel channel) {
+        try {
+            String str = CloudFlareScraper.get(BASE_URL);
+            Matcher m = IMAGE_PATTERN.matcher(str);
+
+            if (!m.find()) {
+                channel.sendMessage(MessageFormat.format(I18n.get(guild).getString("catgirlFail"), BASE_URL)).queue();
+                return;
+            }
+
+            File tmp = CacheUtil.getImageFromURL(BASE_URL + m.group(1));
+            channel.sendFile(tmp, null).queue();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public String help(Guild guild) {
         return "{0}{1}\n#Takes in tags and searches on e926.net";
