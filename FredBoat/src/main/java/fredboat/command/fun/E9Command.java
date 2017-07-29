@@ -72,6 +72,7 @@ public class E9Command extends Command {
 
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(BASE_URL);
+            stringBuilder.append(args[1]);
             stringBuilder.append("?limit=1");
             String finalstring = stringBuilder.toString();
 
