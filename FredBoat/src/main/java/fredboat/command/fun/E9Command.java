@@ -60,7 +60,7 @@ import fredboat.util.rest.CloudFlareScraper;
 
 public class E9Command extends Command {
 
-    private static final Pattern IMAGE_PATTERN = Pattern.compile(/"file_url":"((\\"|[^"])*)");
+    private static final Pattern IMAGE_PATTERN = Pattern.compile(\"file_url\":\"((\\"|[^"])*)");
     private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=";
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(E9Command.class);
 
@@ -82,10 +82,10 @@ public class E9Command extends Command {
 
             if (!m.find()) {
                 //channel.sendMessage(MessageFormat.format(I18n.get(guild).getString("e926Fail"), BASE_URL)).queue();
-                log.info("str: " + m);
-                log.info("finalsearchstring: " + finalstring);
-              channel.sendMessage(str).queue();
-              channel.sendMessage(finalstring).queue();
+                //log.info("str: " + m);
+                //log.info("finalsearchstring: " + finalstring);
+                //channel.sendMessage(str).queue();
+                //channel.sendMessage(finalstring).queue();
                 return;
             }
 
