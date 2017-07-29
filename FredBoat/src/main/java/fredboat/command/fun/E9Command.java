@@ -69,7 +69,7 @@ public class E9Command extends Command {
         channel.sendTyping().queue();
 
         try {
-            String str = CloudFlareScraper.get(BASE_URL);
+            String str = BASE_URL;
             Matcher m = IMAGE_PATTERN.matcher(str);
 
             if (!m.find()) {
