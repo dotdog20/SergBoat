@@ -74,7 +74,7 @@ public class E9Command extends Command {
             stringBuilder.append(BASE_URL);
             stringBuilder.append(args[1]);
             stringBuilder.append(",order:random,filesize:<8mb&limit=1&login=dotdot20&password_hash=");
-            stringBuilder.append(string.valueOf(System.getenv("E926_API")));
+            stringBuilder.append(String.valueOf(System.getenv("E926_API")));
             String finalstring = stringBuilder.toString();
 
 
