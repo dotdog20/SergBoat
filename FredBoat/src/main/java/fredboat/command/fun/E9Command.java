@@ -73,7 +73,7 @@ public class E9Command extends Command {
             Matcher m = IMAGE_PATTERN.matcher(str);
 
             if (!m.find()) {
-                channel.sendMessage(MessageFormat.format(I18n.get(guild).getString("e926Fail"), BASE_URL)).queue();
+                //channel.sendMessage(MessageFormat.format(I18n.get(guild).getString("e926Fail"), BASE_URL)).queue();
                 log.info(str);
                 log.info(BASE_URL);
               channel.sendMessage(str).queue();
