@@ -99,7 +99,7 @@ public class E9Command extends Command {
           throw new RuntimeException(e);
         }
         catch (ArrayIndexOutOfBoundsException e) {
-          out = "``` Requires at least one tag from http://www.e926.net/tag/ up to a limit of "
+          out = "``` Requires at least one tag from http://www.e926.net/tag/ up to a limit of ";
           TextUtils.replyWithName(channel, invoker, out);
         }
     }
