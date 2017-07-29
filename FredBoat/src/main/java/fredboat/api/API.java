@@ -53,7 +53,7 @@ public class API {
             return;
         }
 
-        log.info("Igniting Spark API on port: " + PORT);
+        log.info("/////////Igniting Spark API on port: " + PORT);
 
         Spark.port(PORT);
 
