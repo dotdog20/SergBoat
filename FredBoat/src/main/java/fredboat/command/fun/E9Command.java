@@ -56,7 +56,6 @@ import fredboat.feature.I18n;
 
 import org.slf4j.LoggerFactory;
 
-import fredboat.util.rest.CloudFlareScraper;
 
 public class E9Command extends Command {
 
@@ -73,7 +72,7 @@ public class E9Command extends Command {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(BASE_URL);
             stringBuilder.append(args[1]);
-            stringBuilder.append(",-breasts,order:random,rating:s?limit=1");
+            stringBuilder.append(",-breasts,order:random");
             String finalstring = stringBuilder.toString();
 
 
@@ -98,6 +97,10 @@ public class E9Command extends Command {
         }
         catch (UnirestException e) {
           throw new RuntimeException(e);
+        }
+        catch (ArrayIndexOutOfBoundsException e) {
+          out = "``` Requires at least one tag from http://www.e926.net/tag/ up to a limit of "
+          TextUtils.replyWithName(channel, invoker, out);
         }
     }
 
