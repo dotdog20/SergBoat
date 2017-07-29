@@ -23,7 +23,7 @@
  *
  */
 
-package fredboat.command.fun;
+package fredboat.command.serg;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
