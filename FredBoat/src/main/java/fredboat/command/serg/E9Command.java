@@ -73,7 +73,8 @@ public class E9Command extends Command {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(BASE_URL);
             stringBuilder.append(args[1]);
-            stringBuilder.append(",-breasts,order:random,filesize:<8mb");
+            stringBuilder.append(",-breasts,order:random,filesize:<8mb&limit=1&login=dotdot20&password_hash=");
+            stringBuilder.append(string.valueOf(System.getenv("E926_API")));
             String finalstring = stringBuilder.toString();
 
 
@@ -83,7 +84,7 @@ public class E9Command extends Command {
             if (!m.find()) {
                 //channel.sendMessage(MessageFormat.format(I18n.get(guild).getString("e926Fail"), BASE_URL)).queue();
                 //log.info("str: " + m);
-                //log.info("finalsearchstring: " + finalstring);
+                log.info("finalsearchstring: " + finalstring);
                 //channel.sendMessage(str).queue();
                 //channel.sendMessage(finalstring).queue();
                 return;

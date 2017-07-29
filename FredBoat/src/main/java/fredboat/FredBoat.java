@@ -219,6 +219,14 @@ public abstract class FredBoat {
         shardWatchdogAgent = new ShardWatchdogAgent();
         shardWatchdogAgent.setDaemon(true);
         shardWatchdogAgent.start();
+
+
+
+
+
+
+
+
     }
 
     private static boolean loadJCA() {
