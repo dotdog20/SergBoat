@@ -81,7 +81,7 @@ public class MainCommandInitializer {
         CommandRegistry.registerCommand("dance", new DanceCommand());
         CommandRegistry.registerCommand("talk", new TalkCommand());
         CommandRegistry.registerCommand("akinator", new AkinatorCommand());
-        CommandRegistry.registerCommand("catgirl", new CatgirlCommand(), "neko", "catgrill");
+        CommandRegistry.registerCommand("catgirl", new CatgirlCommand(), "neko", "catgrill", "catgril", "kittywoman", "catwoman");
         CommandRegistry.registerCommand("avatar", new AvatarCommand(), "ava");
         CommandRegistry.registerCommand("say", new SayCommand());
 
