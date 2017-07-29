@@ -26,34 +26,34 @@
 package fredboat.command.fun;
 
 import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.async.Callback;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import fredboat.Config;
 import fredboat.commandmeta.abs.Command;
-
-import net.dv8tion.jda.core.MessageBuilder;
+import fredboat.commandmeta.abs.IFunCommand;
+import fredboat.util.rest.CacheUtil;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import fredboat.FredBoat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.commons.io.FileUtils;
-import fredboat.util.TextUtils;
-
-public class E9Command extends Command implements IFunCommand {
+public class E9Command extends Command {
 
     private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=-spread_legs,-breasts,order:random,rating:s,";
-    private static final Logger log = LoggerFactory.getLogger(E9Command.class);
     private static final Pattern IMAGE_PATTERN = Pattern.compile("\"file_url\":\"([^\"]+)");
-
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(E9Command.class);
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
       try{
@@ -70,9 +70,9 @@ public class E9Command extends Command implements IFunCommand {
         //channel.sendMessage(finalString);
         String str = Unirest.get(finalString).asString().getBody();
         Matcher m = IMAGE_PATTERN.matcher(str);
-        File tmp = CacheUtil.getImageFromURL(m.group(1));
+        //File tmp = CacheUtil.getImageFromURL(m.group(1));
         channel.sendMessage(m.group(1));
-        channel.sendFile(tmp, null).queue();
+      //  channel.sendFile(tmp, null).queue();
 
         log.info("E6: " + finalString);
       } catch (UnirestException e) {
@@ -80,5 +80,10 @@ public class E9Command extends Command implements IFunCommand {
       } catch (Exception e) {
           channel.sendMessage("Failed to connect to").queue();
       }
+
     }
+    @Override
+    public String help(Guild guild) {
+        return "{0}{1}\n#Takes in tags and searches on e926.net";
+      }
   }
