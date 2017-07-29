@@ -51,7 +51,7 @@ public class Config {
 
     public static Config CONFIG = null;
 
-    public static String DEFAULT_PREFIX = "=";
+    public static String DEFAULT_PREFIX = ";";
     //see https://github.com/brettwooldridge/HikariCP connectionTimeout
     public static int HIKARI_TIMEOUT_MILLISECONDS = 1000;
 
@@ -154,7 +154,7 @@ public class Config {
             if (gkeys instanceof List) {
                 ((List) gkeys).forEach((Object str) -> googleKeys.add((String) str));
             } else if (gkeys instanceof String) {
-                googleKeys.add((String) gkeys);
+                googleKeys.add((String) String.valueOf(System.getenv("GOOGLEKEY")));
             } else {
                 log.warn("No google API keys found. Some commands may not work, check the documentation.");
             }
