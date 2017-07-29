@@ -60,7 +60,7 @@ import fredboat.util.rest.CloudFlareScraper;
 
 public class E9Command extends Command {
 
-    private static final Pattern IMAGE_PATTERN = Pattern.compile("src=\"([^\"]+)");
+    private static final Pattern IMAGE_PATTERN = Pattern.compile("file_url=\"([^\"]+)");
     private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=-spread_legs,-breasts,order:random,rating:s,";
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(E9Command.class);
 
@@ -82,8 +82,9 @@ public class E9Command extends Command {
                 return;
             }
 
-            File tmp = CacheUtil.getImageFromURL(BASE_URL + m.group(1));
+            File tmp = CacheUtil.getImageFromURL(m.group(1));
             channel.sendFile(tmp, null).queue();
+            log.info(m.group(1));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
