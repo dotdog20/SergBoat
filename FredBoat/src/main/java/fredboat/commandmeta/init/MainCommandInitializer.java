@@ -39,8 +39,8 @@ public class MainCommandInitializer {
     public static void initCommands() {
         CommandRegistry.registerCommand("help", new HelpCommand(), "info");
         CommandRegistry.registerCommand("commands", new CommandsCommand(), "comms", "cmds");
-        CommandRegistry.registerCommand("invite", new InviteCommand());      
-        
+        CommandRegistry.registerCommand("invite", new InviteCommand());
+
         /* Bot Maintenance */
         CommandRegistry.registerCommand("unblacklist", new UnblacklistCommand(), "unlimit");
         CommandRegistry.registerCommand("version", new VersionCommand());
@@ -55,19 +55,19 @@ public class MainCommandInitializer {
         CommandRegistry.registerCommand("test", new TestCommand());
         CommandRegistry.registerCommand("gitinfo", new GitInfoCommand(), "git");
         CommandRegistry.registerCommand("exit", new ExitCommand());
-        
+
         /* Moderation */
         CommandRegistry.registerCommand("hardban", new HardbanCommand());
         CommandRegistry.registerCommand("kick", new KickCommand());
         CommandRegistry.registerCommand("softban", new SoftbanCommand());
         CommandRegistry.registerCommand("clear", new ClearCommand());
-        
+
         /* Util */
         CommandRegistry.registerCommand("serverinfo", new fredboat.command.util.ServerInfoCommand(), "guildinfo");
         CommandRegistry.registerCommand("userinfo", new fredboat.command.util.UserInfoCommand(), "memberinfo");
         CommandRegistry.registerCommand("ping", new PingCommand());
         CommandRegistry.registerCommand("fuzzy", new FuzzyUserSearchCommand());
-        
+
         /* Fun Commands */
         CommandRegistry.registerCommand("joke", new JokeCommand(), "jk");
         //TODO LeetCommand is borken. Don't throw unnecessary error reports until it's fixed or removed.
@@ -100,7 +100,7 @@ public class MainCommandInitializer {
         CommandRegistry.registerCommand("noods", new RemoteFileCommand("http://i.imgur.com/mKdTGlg.png"));
         CommandRegistry.registerCommand("internetspeed", new RemoteFileCommand("http://i.imgur.com/84nbpQe.png"));
         CommandRegistry.registerCommand("powerpoint", new RemoteFileCommand("http://i.imgur.com/i65ss6p.png"));
-        
+
         /* Text Faces & Unicode 'Art' & ASCII 'Art' and Stuff */
         CommandRegistry.registerCommand("s", new TextCommand("¯\\_(ツ)_/¯"), "shrug");
         CommandRegistry.registerCommand("lenny", new TextCommand("( ͡° ͜ʖ ͡°)"));
@@ -116,9 +116,9 @@ public class MainCommandInitializer {
         CommandRegistry.registerCommand("useless", new TextCommand("This command is useless."));
         CommandRegistry.registerCommand("swtf", new TextCommand("¯\\\\(°_o)/¯"), "shrugwtf");
         CommandRegistry.registerCommand("hurray", new TextCommand("ヽ(^o^)ノ"), "yay", "woot");
-        
+
         /* Misc - All commands under this line fall in this category */
-        
+
         CommandRegistry.registerCommand("mal", new MALCommand());
         CommandRegistry.registerCommand("brainfuck", new BrainfuckCommand());
 
@@ -129,6 +129,11 @@ public class MainCommandInitializer {
         CommandRegistry.registerCommand("pat", new PatCommand("https://imgur.com/a/WiPTl"));
         CommandRegistry.registerCommand("facedesk", new FacedeskCommand("https://imgur.com/a/I5Q4U"));
         CommandRegistry.registerCommand("roll", new RollCommand("https://imgur.com/a/lrEwS"));
+
+
+
+        //Added commands from selfhost
+        CommandRegistry.registerCommand("E9", new E9Command(), "e9", "E926", "e926");
     }
 
 }
