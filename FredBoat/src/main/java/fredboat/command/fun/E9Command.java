@@ -76,17 +76,15 @@ public class E9Command extends Command {
             String finalstring = stringBuilder.toString();
 
 
-
-
             String str = Unirest.get(finalstring).asString().getBody();;
             Matcher m = IMAGE_PATTERN.matcher(str);
 
             if (!m.find()) {
                 //channel.sendMessage(MessageFormat.format(I18n.get(guild).getString("e926Fail"), BASE_URL)).queue();
-                log.info(str);
-                log.info(BASE_URL);
+                log.info("str: " + str);
+                log.info("finalsearchstring: " + finalstring);
               channel.sendMessage(str).queue();
-              channel.sendMessage(BASE_URL).queue();
+              channel.sendMessage(finalstring).queue();
                 return;
             }
 
