@@ -67,10 +67,7 @@ public class E9Command extends Command {
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
         channel.sendTyping().queue();
-        FredBoat.executor.submit(() -> postE9(guild, channel));
-    }
 
-    private void postE9(Guild guild, TextChannel channel) {
         try {
             String str = CloudFlareScraper.get(BASE_URL);
             Matcher m = IMAGE_PATTERN.matcher(str);
