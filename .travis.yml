@@ -5,4 +5,3 @@ jdk:
 
 notifications:
     webhooks:
-        - https://discordapp.com/api/webhooks/340677996346212355/-TskBBCWaEqQun96ibe8S7lcDddHnFPVYZklI0bm4mdoRCircjnQGmL6W7eZL9QPw67w
