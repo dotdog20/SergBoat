@@ -125,6 +125,13 @@ public abstract class FredBoat {
         //Make JDA not print to console, we have Logback for that
         SimpleLog.LEVEL = SimpleLog.Level.OFF;
 
+
+
+        System.setProperty("User-Agent", "Sergboat, a ford of Frederikam/Fredboat, for furs");
+        Unirest.setDefaultHeader("User-Agent", "Sergboat, a ford of Frederikam/Fredboat, for furs");
+
+
+
         int scope;
         try {
             scope = Integer.parseInt(args[0]);
