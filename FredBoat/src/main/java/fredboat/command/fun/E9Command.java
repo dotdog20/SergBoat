@@ -82,7 +82,7 @@ public class E9Command extends Command {
 
             if (!m.find()) {
                 //channel.sendMessage(MessageFormat.format(I18n.get(guild).getString("e926Fail"), BASE_URL)).queue();
-                log.info("str: " + str);
+                log.info("str: " + m);
                 log.info("finalsearchstring: " + finalstring);
               channel.sendMessage(str).queue();
               channel.sendMessage(finalstring).queue();
