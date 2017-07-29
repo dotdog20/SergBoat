@@ -60,7 +60,7 @@ import fredboat.util.TextUtils;
 
 public class FirlCommand extends Command {
 
-    private static final Pattern IMAGE_PATTERN = Pattern.compile("\"url\":\"([^\"]+)");
+    private static final Pattern IMAGE_PATTERN = Pattern.compile("\"url\": \"([^\"]+)");
     private static final String BASE_URL = "https://www.reddit.com/r/furry_irl/random.json?limit=1";
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(E9Command.class);
 
@@ -84,8 +84,8 @@ public class FirlCommand extends Command {
 
             File tmp = CacheUtil.getImageFromURL(m.group(1));
             channel.sendFile(tmp, null).queue();
-            //log.info("///////////////////" + m.group(1) + "////////////////////////////////");
-            //channel.sendMessage(m.group(1)).queue();
+            log.info("///////////////////" + m.group(1) + "////////////////////////////////");
+            channel.sendMessage(m.group(1)).queue();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
