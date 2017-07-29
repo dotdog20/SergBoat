@@ -30,7 +30,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.async.Callback;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import fredboat.commandmeta.abs.Command;
-import fredboat.util.CacheUtil;
+
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -48,10 +48,10 @@ import org.slf4j.LoggerFactory;
 import org.apache.commons.io.FileUtils;
 import fredboat.util.TextUtils;
 
-public class E9Command extends Command {
+public class E9Command extends Command implements IFunCommand {
 
     private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=-spread_legs,-breasts,order:random,rating:s,";
-    private static final Logger log = LoggerFactory.getLogger(E6Command.class);
+    private static final Logger log = LoggerFactory.getLogger(E9Command.class);
     private static final Pattern IMAGE_PATTERN = Pattern.compile("\"file_url\":\"([^\"]+)");
 
     @Override
