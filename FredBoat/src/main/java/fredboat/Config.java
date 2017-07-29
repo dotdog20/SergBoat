@@ -139,7 +139,7 @@ public class Config {
             cbKey = (String) creds.getOrDefault("cbKey", "");
             Map<String, String> token = (Map) creds.get("token");
             if (token != null) {
-                botToken = String.valueOf(System.getenv("PORT"));
+                botToken = String.valueOf(System.getenv("TOKEN"));
             } else botToken = "";
             spotifyId = (String) creds.getOrDefault("spotifyId", "");
             spotifySecret = (String) creds.getOrDefault("spotifySecret", "");
