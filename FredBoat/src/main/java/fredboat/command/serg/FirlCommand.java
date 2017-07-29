@@ -75,8 +75,8 @@ public class FirlCommand extends Command {
 
             if (!m.find()) {
                 //channel.sendMessage(MessageFormat.format(I18n.get(guild).getString("e926Fail"), BASE_URL)).queue();
-                log.info("str: " + str);
-                log.info("finalsearchstring: " + BASE_URL);
+                //log.info("str: " + str);
+                //log.info("finalsearchstring: " + BASE_URL);
                 //channel.sendMessage(str).queue();
                 //channel.sendMessage(finalstring).queue();
                 return;
@@ -84,8 +84,8 @@ public class FirlCommand extends Command {
 
             File tmp = CacheUtil.getImageFromURL(m.group(1));
             channel.sendFile(tmp, null).queue();
-            log.info("///////////////////" + m.group(1) + "////////////////////////////////");
-            channel.sendMessage(m.group(1)).queue();
+            //log.info("///////////////////" + m.group(1) + "////////////////////////////////");
+            //channel.sendMessage(m.group(1)).queue();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
