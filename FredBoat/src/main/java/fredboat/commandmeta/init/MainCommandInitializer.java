@@ -33,8 +33,12 @@ import fredboat.command.moderation.KickCommand;
 import fredboat.command.moderation.SoftbanCommand;
 import fredboat.command.util.*;
 import fredboat.commandmeta.CommandRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MainCommandInitializer {
+
+    private static final Logger log = LoggerFactory.getLogger(MusicCommandInitializer.class);
 
     public static void initCommands() {
         CommandRegistry.registerCommand("help", new HelpCommand(), "info");
