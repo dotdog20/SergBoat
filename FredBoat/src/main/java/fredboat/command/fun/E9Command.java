@@ -54,6 +54,7 @@ import java.util.regex.Pattern;
 import fredboat.FredBoat;
 import fredboat.feature.I18n;
 
+import org.slf4j.LoggerFactory;
 
 import fredboat.util.rest.CloudFlareScraper;
 
@@ -61,6 +62,7 @@ public class E9Command extends Command {
 
     private static final Pattern IMAGE_PATTERN = Pattern.compile("src=\"([^\"]+)");
     private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=-spread_legs,-breasts,order:random,rating:s,";
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(E9Command.class);
 
     @Override
     public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
@@ -74,7 +76,9 @@ public class E9Command extends Command {
             Matcher m = IMAGE_PATTERN.matcher(str);
 
             if (!m.find()) {
-                channel.sendMessage(MessageFormat.format(I18n.get(guild).getString("catgirlFail"), BASE_URL)).queue();
+                channel.sendMessage(MessageFormat.format(I18n.get(guild).getString("e926Fail"), BASE_URL)).queue();
+                log.info(str);
+                log.info(BASE_URL);
                 return;
             }
 
