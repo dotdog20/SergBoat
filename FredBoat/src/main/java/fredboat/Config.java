@@ -51,7 +51,7 @@ public class Config {
 
     public static Config CONFIG = null;
 
-    public static String DEFAULT_PREFIX = "<<";
+    public static String DEFAULT_PREFIX = "=";
     //see https://github.com/brettwooldridge/HikariCP connectionTimeout
     public static int HIKARI_TIMEOUT_MILLISECONDS = 1000;
 
