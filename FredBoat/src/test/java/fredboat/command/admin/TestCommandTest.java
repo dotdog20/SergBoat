@@ -30,7 +30,7 @@ class TestCommandTest extends ProvideJDASingleton {
         String[] args = {"test", "10", "10"};
 
         //test the connection if one was specified
-        String jdbcUrl = System.getenv("DATABASE_URL");
+        String jdbcUrl = Config.CONFIG.getJdbcUrl();
         if (jdbcUrl != null && !"".equals(jdbcUrl)) {
             //start the database
             DatabaseManager dbm = new DatabaseManager(jdbcUrl, null, Config.CONFIG.getHikariPoolSize());
