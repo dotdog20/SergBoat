@@ -84,6 +84,7 @@ public class E9Command extends Command {
 
             if (m.group(1) >= 8000000) {
               log.info("///////////////////IMAGE GREATER THAN 8MB///////////");
+              return;
             }
 
             if (!m.find()) {
