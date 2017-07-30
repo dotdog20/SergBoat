@@ -98,7 +98,7 @@ public class E9Command extends Command {
                 return;
             }
 
-            File tmp = CacheUtil.getImageFromURL(m.group(1));
+            File tmp = CacheUtil.getImageFromURL(msize.group(1));
             channel.sendFile(tmp, null).queue();
             //log.info("///////////////////" + m.group(1) + "////////////////////////////////");
             //channel.sendMessage(m.group(1)).queue();
