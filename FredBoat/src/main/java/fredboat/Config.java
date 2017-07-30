@@ -273,6 +273,7 @@ public class Config {
     }
 
     public String getJdbcUrl() {
+        String jdbcUrl = System.getenv("DATABASE_URL");
         return jdbcUrl;
     }
 
