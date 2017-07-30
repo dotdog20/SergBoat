@@ -59,9 +59,9 @@ public class MusicCommandInitializer {
         CommandRegistry.registerCommand("help", new HelpCommand(), "info");
         CommandRegistry.registerCommand("music", new MusicHelpCommand(), "musichelp");
         CommandRegistry.registerCommand("commands", new CommandsCommand(), "comms", "cmds");
-        
+
         /* Control */
-        CommandRegistry.registerCommand("play", new PlayCommand(SearchUtil.SearchProvider.YOUTUBE), "yt", "youtube");
+        CommandRegistry.registerCommand("play", new PlayCommand(SearchUtil.SearchProvider.YOUTUBE), "yt", "youtube", "p");
         CommandRegistry.registerCommand("sc", new PlayCommand(SearchUtil.SearchProvider.SOUNDCLOUD), "soundcloud");
         CommandRegistry.registerCommand("skip", new SkipCommand(), "sk");
         CommandRegistry.registerCommand("join", new JoinCommand(), "summon", "jn");
@@ -76,7 +76,7 @@ public class MusicCommandInitializer {
         CommandRegistry.registerCommand("unpause", new UnpauseCommand(), "unp", "resume");
         CommandRegistry.registerCommand("split", new PlaySplitCommand());
         CommandRegistry.registerCommand("destroy", new DestroyCommand());
-        
+
         /* Info */
         CommandRegistry.registerCommand("nowplaying", new NowplayingCommand(), "np");
         CommandRegistry.registerCommand("list", new ListCommand(), "queue", "q");
@@ -89,7 +89,7 @@ public class MusicCommandInitializer {
         CommandRegistry.registerCommand("forward", new ForwardCommand(), "fwd");
         CommandRegistry.registerCommand("rewind", new RewindCommand(), "rew");
         CommandRegistry.registerCommand("restart", new RestartCommand());
-        
+
         /* Bot Maintenance Commands */
         CommandRegistry.registerCommand("mgitinfo", new GitInfoCommand(), "mgit");
         CommandRegistry.registerCommand("munblacklist", new UnblacklistCommand(), "munlimit");
@@ -108,11 +108,11 @@ public class MusicCommandInitializer {
         CommandRegistry.registerCommand("adebug", new AudioDebugCommand());
         CommandRegistry.registerCommand("announce", new AnnounceCommand());
         CommandRegistry.registerCommand("mping", new PingCommand());
-        
+
         /* Bot configuration */
         CommandRegistry.registerCommand("config", new ConfigCommand(), "cfg");
         CommandRegistry.registerCommand("lang", new LanguageCommand(), "language");
-        
+
         /* Perms */
         CommandRegistry.registerCommand("admin", new PermissionsCommand(PermissionLevel.ADMIN));
         CommandRegistry.registerCommand("dj", new PermissionsCommand(PermissionLevel.DJ));
