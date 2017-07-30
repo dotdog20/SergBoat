@@ -108,6 +108,6 @@ public class E6Command extends Command {
 
     @Override
     public String help(Guild guild) {
-        return "{0}{1}\n#Takes in tags and searches on e926.net";
+        return "{0}{1}\n#Takes in tags and searches on e621.net {NSFW}";
       }
   }

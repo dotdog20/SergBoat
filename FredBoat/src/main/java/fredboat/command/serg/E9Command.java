@@ -61,6 +61,7 @@ import fredboat.util.TextUtils;
 public class E9Command extends Command {
 
     private static final Pattern IMAGE_PATTERN = Pattern.compile("\"file_url\":\"([^\"]+)");
+    private static final Pattern IMAGE_LOWRES = Pattern.compile("\"sample_url\":\"([^\"]+)");
     private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=";
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(E9Command.class);
 
