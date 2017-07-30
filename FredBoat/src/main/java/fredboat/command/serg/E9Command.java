@@ -62,6 +62,7 @@ public class E9Command extends Command {
 
     private static final Pattern IMAGE_PATTERN = Pattern.compile("\"file_url\":\"([^\"]+)");
     private static final Pattern IMAGE_LOWRES = Pattern.compile("\"sample_url\":\"([^\"]+)");
+    private static final Pattern IMAGE_SIZE = Pattern.compile("\"file_size\":\"([^\"]+)");
     private static final String BASE_URL = "https://www.e926.net/post/index.json?tags=";
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(E9Command.class);
 
@@ -77,10 +78,13 @@ public class E9Command extends Command {
             stringBuilder.append(",order:random,&limit=1&login=dotdot20&password_hash=");
             stringBuilder.append(String.valueOf(System.getenv("E926_API")));
             String finalstring = stringBuilder.toString();
-
-
             String str = Unirest.get(finalstring).asString().getBody();;
-            Matcher m = IMAGE_PATTERN.matcher(str);
+
+            Matcher m = IMAGE_SIZE.matcher(str);
+
+            if (m.group(1) >= 8000000) {
+              log.info("///////////////////IMAGE GREATER THAN 8MB///////////");
+            }
 
             if (!m.find()) {
                 //channel.sendMessage(MessageFormat.format(I18n.get(guild).getString("e926Fail"), BASE_URL)).queue();
