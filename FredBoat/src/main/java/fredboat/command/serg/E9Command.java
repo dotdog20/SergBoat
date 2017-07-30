@@ -82,17 +82,15 @@ public class E9Command extends Command {
 
             Matcher msize = IMAGE_SIZE.matcher(str);
 
-            int msize_int = Integer.parseInt(msize);
-
-            if (msize_int >= 8000000) {
+            if (msize.group(1) >= 8000000) {
               log.info("///////////////////IMAGE GREATER THAN 8MB///////////");
 
-            } else if (msize_int >= 0) {
+            } else if (msize.group(1) >= 0) {
               log.info("///////////////////IMAGE LESS THAN 8MB///////////");
             }
 
-            else {
-                channel.sendMessage(MessageFormat.format(I18n.get(guild).getString("e926Fail"), BASE_URL)).queue();
+            else if (!msize.find()) {
+                //channel.sendMessage(MessageFormat.format(I18n.get(guild).getString("e926Fail"), BASE_URL)).queue();
                 //log.info("str: " + m);
                 log.info("finalsearchstring: " + finalstring);
                 //channel.sendMessage(str).queue();
