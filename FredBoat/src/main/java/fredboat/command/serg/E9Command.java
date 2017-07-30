@@ -85,7 +85,7 @@ public class E9Command extends Command {
             if (msize.group(1) >= 8000000) {
               log.info("///////////////////IMAGE GREATER THAN 8MB///////////");
 
-            } else if (msize.group(1) < 8000000) {
+            } else if (msize.group(1) >= 0) {
               log.info("///////////////////IMAGE LESS THAN 8MB///////////");
             }
 
