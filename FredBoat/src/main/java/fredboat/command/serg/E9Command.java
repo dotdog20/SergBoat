@@ -82,7 +82,7 @@ public class E9Command extends Command {
             String str = Unirest.get(finalstring).asString().getBody();;
             Matcher m = IMAGE_PATTERN.matcher(str);
 
-            if (!msize.find()) {
+            if (!m.find()) {
                 //channel.sendMessage(MessageFormat.format(I18n.get(guild).getString("e926Fail"), BASE_URL)).queue();
                 //log.info("str: " + m);
                 log.info("finalsearchstring: " + finalstring);
@@ -91,7 +91,7 @@ public class E9Command extends Command {
                 return;
             }
 
-            File tmp = CacheUtil.getImageFromURL(msize.group(1));
+            File tmp = CacheUtil.getImageFromURL(m.group(1));
             channel.sendFile(tmp, null).queue();
             //log.info("///////////////////" + m.group(1) + "////////////////////////////////");
             //channel.sendMessage(m.group(1)).queue();
