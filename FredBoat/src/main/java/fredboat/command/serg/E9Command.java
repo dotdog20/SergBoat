@@ -80,14 +80,16 @@ public class E9Command extends Command {
             String finalstring = stringBuilder.toString();
             String str = Unirest.get(finalstring).asString().getBody();;
 
-            Matcher m = IMAGE_SIZE.matcher(str);
+            Matcher msize = IMAGE_SIZE.matcher(str);
 
-            if (m.group(1) >= 8000000) {
+            if (msize.group(1) >= 8000000) {
               log.info("///////////////////IMAGE GREATER THAN 8MB///////////");
-              return;
+
+            } else if (msize.group(1) < 8000000) {
+              log.info("///////////////////IMAGE LESS THAN 8MB///////////");
             }
 
-            if (!m.find()) {
+            else if (!msize.find()) {
                 //channel.sendMessage(MessageFormat.format(I18n.get(guild).getString("e926Fail"), BASE_URL)).queue();
                 //log.info("str: " + m);
                 log.info("finalsearchstring: " + finalstring);
