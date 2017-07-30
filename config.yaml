@@ -1,7 +1,7 @@
 ---
 patron:            true       # Set this to true for self hosting the music bot
 development:       true        # Set this to true for self hosting the full bot (including non music commands)
-prefix:            ','        # Default prefix used by the bot
+prefix:            ';'        # Default prefix used by the bot
 restServerEnabled: true        # Set this to false if you are running multiple FredBoat bots on the same machine
 admins:            [236892391661895680, 211551949827342337, 251897624473370641]          # add comma separated userIds and roleIds that should have access to bot admin commands
 useAutoBlacklist:  false        # set to true to automatically blacklist users who frequently hit the rate limits
