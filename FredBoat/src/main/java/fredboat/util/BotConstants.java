@@ -37,7 +37,7 @@ public class BotConstants {
     public static final String MUSIC_BOT_ID = "267822065";
     public static final String BETA_BOT_ID = "152691313";
     public static final String MAIN_BOT_ID = "26782206556";
-    public static final String PATRON_BOT_ID = "2419501061";
+    public static final String PATRON_BOT_ID = "341126450851872768";
 
     public static final String FREDBOAT_HANGOUT_ID = "174820236481134592";
 
