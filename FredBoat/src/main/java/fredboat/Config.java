@@ -152,7 +152,7 @@ public class Config {
 
             Object gkeys = creds.get("googleServerKeys");
             if (gkeys instanceof List) {
-                ((List) gkeys).forEach((Object str) -> googleKeys.add(String.valueOf(System.getenv("GOOGLEKEY")));
+                ((List) gkeys).forEach((Object str) -> googleKeys.add(String.valueOf(System.getenv("GOOGLEKEY"))));
             } else if (gkeys instanceof String) {
                 googleKeys.add(String.valueOf(System.getenv("GOOGLEKEY")));
                 log.info(String.valueOf(System.getenv("/////////////////////////////////////////////////////////////////////////////////////////////GOOGLEKEY")));
