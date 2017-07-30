@@ -141,6 +141,11 @@ public class MainCommandInitializer {
         CommandRegistry.registerCommand("E9", new E9Command(), "e9", "E926", "e926");
         CommandRegistry.registerCommand("E6", new E6Command(), "e6", "E621", "e621");
         CommandRegistry.registerCommand("Firl", new FirlCommand(), "firl", "furry_irl", "fur");
+        CommandRegistry.registerCommand("razor", new RemoteFileCommand("https://pbs.twimg.com/profile_images/694250556500660224/GZWU-Au7.jpg"));
+        CommandRegistry.registerCommand("burd", new RemoteFileCommand("http://a.deviantart.net/avatars/b/u/burdplz.png"));
+        CommandRegistry.registerCommand("razors", new RemoteFileCommand("https://cdn.discordapp.com/attachments/268942002937266177/277239425350631426/31e6f6df-86dc-4509-a5f3-9781b337dbd28794698958514696739.jpg"));
+
+
     }
 
 }
