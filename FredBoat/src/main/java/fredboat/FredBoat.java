@@ -156,7 +156,7 @@ public abstract class FredBoat {
         }
 
         if (!Config.CONFIG.getJdbcUrl().equals("")) {
-            dbManager = new DatabaseManager(String.valueOf(System.getenv("JDBC_DATABASE_URL")), null, Config.CONFIG.getHikariPoolSize());
+            dbManager = new DatabaseManager(String.valueOf(System.getenv("DATABASE_URL")), null, Config.CONFIG.getHikariPoolSize());
             dbManager.startup();
             dbConnectionWatchdogAgent = new DBConnectionWatchdogAgent(dbManager);
             dbConnectionWatchdogAgent.start();
