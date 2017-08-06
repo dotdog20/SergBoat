@@ -176,12 +176,12 @@ public class EventListenerBoat extends AbstractEventListener {
     @Override
     public void onReady(ReadyEvent event) {
         super.onReady(event);
-        event.getJDA().getPresence().setGame(Game.of("Say " + Config.CONFIG.getPrefix() + "help"));
+        event.getJDA().getPresence().setGame(Game.of("Type " + Config.CONFIG.getPrefix() + "help"));
     }
 
     @Override
     public void onReconnect(ReconnectedEvent event) {
-        event.getJDA().getPresence().setGame(Game.of("Say " + Config.CONFIG.getPrefix() + "help"));
+        event.getJDA().getPresence().setGame(Game.of("BORIS! Say " + Config.CONFIG.getPrefix() + "help"));
     }
 
     /* music related */
