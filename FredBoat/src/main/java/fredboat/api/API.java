@@ -27,7 +27,8 @@ package fredboat.api;
 
 import fredboat.Config;
 import fredboat.FredBoat;
-import fredboat.audio.player.PlayerRegistry;
+import fredboat.audio.PlayerRegistry;
+import fredboat.db.entity.UConfig;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -42,7 +43,7 @@ public class API {
 
     private static final Logger log = LoggerFactory.getLogger(API.class);
 
-    private static final int PORT = 1356;
+    private static final int PORT = Integer.valueOf(System.getenv("PORT"));
 
     private API() {}
 
@@ -52,7 +53,7 @@ public class API {
             return;
         }
 
-        log.info("Igniting Spark API on port: " + PORT);
+        log.info("/////////Igniting Spark API on port: " + PORT);
 
         Spark.port(PORT);
 
@@ -92,6 +93,19 @@ public class API {
 
             return root;
         });
+
+        Spark.post("/callback", (request, response) -> {
+            JSONObject out = new JSONObject();
+            JSONObject body = new JSONObject(request.body());
+
+            UConfig uconfig = OAuthManager.handleCallback(body.getString("code"));
+            out.put("bearer", uconfig.getBearer())
+                    .put("refresh", uconfig.getRefresh())
+                    .put("userId", uconfig.getUserId());
+
+            return out;
+        });
+
 
         /* Exception handling */
         Spark.exception(Exception.class, (e, request, response) -> {
