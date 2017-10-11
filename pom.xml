@@ -88,4 +88,15 @@
     </repositories>
 
     <!-- force clean all the time-->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>maven-clean-plugin</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
