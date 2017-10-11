@@ -24,27 +24,32 @@
  */
 package fredboat.event;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import fredboat.Config;
-import fredboat.audio.GuildPlayer;
-import fredboat.audio.PlayerRegistry;
-import fredboat.command.fun.TalkCommand;
+import fredboat.audio.player.GuildPlayer;
+import fredboat.audio.player.PlayerRegistry;
 import fredboat.command.music.control.SkipCommand;
 import fredboat.command.util.HelpCommand;
 import fredboat.commandmeta.CommandManager;
-import fredboat.commandmeta.CommandRegistry;
-import fredboat.commandmeta.abs.Command;
+import fredboat.commandmeta.abs.CommandContext;
 import fredboat.db.EntityReader;
 import fredboat.feature.I18n;
 import fredboat.feature.togglz.FeatureFlags;
+import fredboat.messaging.CentralMessaging;
 import fredboat.util.Tuple2;
 import fredboat.util.ratelimit.Ratelimiter;
-import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.ReadyEvent;
-import net.dv8tion.jda.core.events.ReconnectedEvent;
+import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
+import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
+import net.dv8tion.jda.core.events.http.HttpRequestEvent;
 import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
@@ -52,9 +57,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
+import java.util.concurrent.TimeUnit;
 
 public class EventListenerBoat extends AbstractEventListener {
 
@@ -62,7 +65,10 @@ public class EventListenerBoat extends AbstractEventListener {
 
     //first string is the users message ID, second string the id of fredboat's message that should be deleted if the
     // user's message is deleted
-    public static Map<String, String> messagesToDeleteIfIdDeleted = new HashMap<>();
+    public static final Cache<Long, Long> messagesToDeleteIfIdDeleted = CacheBuilder.newBuilder()
+            .expireAfterWrite(6, TimeUnit.HOURS)
+            .build();
+
     private User lastUserToReceiveHelp;
 
     public EventListenerBoat() {
@@ -87,66 +93,63 @@ public class EventListenerBoat extends AbstractEventListener {
             return;
         }
 
-        if (event.getMessage().getContent().length() < Config.CONFIG.getPrefix().length()) {
+        if (event.getAuthor().isBot()) {
             return;
         }
 
-        if (event.getMessage().getContent().substring(0, Config.CONFIG.getPrefix().length()).equals(Config.CONFIG.getPrefix())) {
-            Command invoked = null;
+        String content = event.getMessage().getContent();
+        if (content.length() <= Config.CONFIG.getPrefix().length()) {
+            return;
+        }
+
+        if (content.startsWith(Config.CONFIG.getPrefix())) {
             log.info(event.getGuild().getName() + " \t " + event.getAuthor().getName() + " \t " + event.getMessage().getRawContent());
-            Matcher matcher = COMMAND_NAME_PREFIX.matcher(event.getMessage().getContent());
 
-            if(matcher.find()) {
-                String cmdName = matcher.group();
-                CommandRegistry.CommandEntry entry = CommandRegistry.getCommand(cmdName);
-                if(entry != null) {
-                    invoked = entry.command;
-                } else {
-                    log.info("Unknown command:", cmdName);
-                }
-            }
+            CommandContext context = CommandContext.parse(event);
 
-            if (invoked == null) {
+            if (context == null) {
                 return;
             }
 
-            limitOrExecuteCommand(invoked, event);
-        } else if (event.getMessage().getMentionedUsers().contains(event.getJDA().getSelfUser())) {
-            log.info(event.getGuild().getName() + " \t " + event.getAuthor().getName() + " \t " + event.getMessage().getRawContent());
-            CommandManager.commandsExecuted.getAndIncrement();
-            //regex101.com/r/9aw6ai/1/
-            String message = event.getMessage().getRawContent().replaceAll("<@!?[0-9]*>", "");
-            TalkCommand.talk(event.getMember(), event.getTextChannel(), message);
+            //ignore all commands in channels where we can't write, except for the help command
+            if (!context.hasPermissions(Permission.MESSAGE_WRITE) && !(context.command instanceof HelpCommand)) {
+                log.debug("Ignored command because this bot cannot write in that channel");
+                return;
+            }
+
+            limitOrExecuteCommand(context);
         }
     }
 
     /**
-     * check the rate limit of user and execute the command if everything is fine
+     * Check the rate limit of the user and execute the command if everything is fine.
+     * @param context Command context of the command to be invoked.
      */
-    private void limitOrExecuteCommand(Command invoked, MessageReceivedEvent event) {
+    private void limitOrExecuteCommand(CommandContext context) {
         Tuple2<Boolean, Class> ratelimiterResult = new Tuple2<>(true, null);
         if (FeatureFlags.RATE_LIMITER.isActive()) {
-            ratelimiterResult = Ratelimiter.getRatelimiter().isAllowed(event.getMember(), invoked, 1, event.getTextChannel());
+            ratelimiterResult = Ratelimiter.getRatelimiter().isAllowed(context, context.command, 1);
 
         }
         if (ratelimiterResult.a)
-            CommandManager.prefixCalled(invoked, event.getGuild(), event.getTextChannel(), event.getMember(), event.getMessage());
+            CommandManager.prefixCalled(context);
         else {
-            String out = event.getMember().getAsMention() + ": " + I18n.get(event.getGuild()).getString("ratelimitedGeneralInfo");
+            String out = I18n.get(context, "ratelimitedGeneralInfo");
             if (ratelimiterResult.b == SkipCommand.class) { //we can compare classes with == as long as we are using the same classloader (which we are)
                 //add a nice reminder on how to skip more than 1 song
-                out += "\n" + MessageFormat.format(I18n.get(event.getGuild()).getString("ratelimitedSkipCommand"), "`" + Config.CONFIG.getPrefix() + "skip n-m`");
+                out += "\n" + MessageFormat.format(I18n.get(context, "ratelimitedSkipCommand"),
+                        "`" + Config.CONFIG.getPrefix() + "skip n-m`");
             }
-            event.getTextChannel().sendMessage(out).queue();
+            context.replyWithMention(out);
         }
-
     }
 
     @Override
     public void onMessageDelete(MessageDeleteEvent event) {
-        if (messagesToDeleteIfIdDeleted.containsKey(event.getMessageId())) {
-            String msgId = messagesToDeleteIfIdDeleted.remove(event.getMessageId());
-            event.getChannel().deleteMessageById(msgId).queue();
+        Long toDelete = messagesToDeleteIfIdDeleted.getIfPresent(event.getMessageIdLong());
+        if (toDelete != null) {
+            messagesToDeleteIfIdDeleted.invalidate(toDelete);
+            CentralMessaging.deleteMessageById(event.getChannel(), toDelete);
         }
     }
 
@@ -169,25 +172,58 @@ public class EventListenerBoat extends AbstractEventListener {
             return;
         }
 
-        event.getChannel().sendMessage(HelpCommand.getHelpDmMsg(null)).queue();
+        CentralMessaging.sendMessage(event.getChannel(), HelpCommand.getHelpDmMsg(null));
         lastUserToReceiveHelp = event.getAuthor();
-    }
-
-    @Override
-    public void onReady(ReadyEvent event) {
-        super.onReady(event);
-        event.getJDA().getPresence().setGame(Game.of("Type " + Config.CONFIG.getPrefix() + "help"));
-    }
-
-    @Override
-    public void onReconnect(ReconnectedEvent event) {
-        event.getJDA().getPresence().setGame(Game.of("BORIS! Say " + Config.CONFIG.getPrefix() + "help"));
     }
 
     /* music related */
     @Override
     public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
-        GuildPlayer player = PlayerRegistry.getExisting(event.getGuild());
+        checkForAutoPause(event.getChannelLeft());
+    }
+
+    @Override
+    public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
+        checkForAutoPause(event.getChannelLeft());
+        checkForAutoResume(event.getChannelJoined(), event.getMember());
+
+        //were we moved?
+        if (event.getMember().getUser().getIdLong() == event.getJDA().getSelfUser().getIdLong()) {
+            checkForAutoPause(event.getChannelJoined());
+        }
+    }
+
+    @Override
+    public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
+        checkForAutoResume(event.getChannelJoined(), event.getMember());
+    }
+
+    private void checkForAutoResume(VoiceChannel joinedChannel, Member joined) {
+        Guild guild = joinedChannel.getGuild();
+        //ignore bot users that arent us joining / moving
+        if (joined.getUser().isBot()
+                && guild.getSelfMember().getUser().getIdLong() != joined.getUser().getIdLong()) return;
+
+        GuildPlayer player = PlayerRegistry.getExisting(guild);
+
+        if (player != null
+                && player.isPaused()
+                && player.getPlayingTrack() != null
+                && joinedChannel.getMembers().contains(guild.getSelfMember())
+                && player.getHumanUsersInCurrentVC().size() > 0
+                && EntityReader.getGuildConfig(guild.getId()).isAutoResume()
+                ) {
+            player.setPause(false);
+            TextChannel activeTextChannel = player.getActiveTextChannel();
+            if (activeTextChannel != null) {
+                CentralMessaging.sendMessage(activeTextChannel, I18n.get(guild).getString("eventAutoResumed"));
+            }
+        }
+    }
+
+    private void checkForAutoPause(VoiceChannel channelLeft) {
+        Guild guild = channelLeft.getGuild();
+        GuildPlayer player = PlayerRegistry.getExisting(guild);
 
         if (player == null) {
             return;
@@ -195,33 +231,24 @@ public class EventListenerBoat extends AbstractEventListener {
 
         //we got kicked from the server while in a voice channel, do nothing and return, because onGuildLeave()
         // should take care of destroying stuff
-        if (!event.getGuild().isMember(event.getJDA().getSelfUser())) {
+        if (!guild.isMember(guild.getJDA().getSelfUser())) {
             log.warn("onGuildVoiceLeave called for a guild where we aren't a member. This line should only ever be " +
-                    "reached if we are getting kicked from that guild. Investigate if not.");
+                    "reached if we are getting kicked from that guild while in a voice channel. Investigate if not.");
             return;
         }
 
-        if (player.getHumanUsersInVC().isEmpty()
-                && player.getUserCurrentVoiceChannel(event.getGuild().getSelfMember()) == event.getChannelLeft()
-                && !player.isPaused()) {
-            player.pause();
-            player.getActiveTextChannel().sendMessage(I18n.get(event.getGuild()).getString("eventUsersLeftVC")).queue();
+        //are we in the channel that someone left from?
+        VoiceChannel currentVc = player.getCurrentVoiceChannel();
+        if (currentVc != null && currentVc.getIdLong() != channelLeft.getIdLong()) {
+            return;
         }
-    }
 
-    @Override
-    public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
-        GuildPlayer player = PlayerRegistry.getExisting(event.getGuild());
-
-        if(player != null
-                && player.isPaused()
-                && player.getPlayingTrack() != null
-                && event.getChannelJoined().getMembers().contains(event.getGuild().getSelfMember())
-                && player.getHumanUsersInVC().size() == 1
-                && EntityReader.getGuildConfig(event.getGuild().getId()).isAutoResume()
-                ) {
-            player.getActiveTextChannel().sendMessage(I18n.get(event.getGuild()).getString("eventAutoResumed")).queue();
-            player.setPause(false);
+        if (player.getHumanUsersInVC(currentVc).isEmpty() && !player.isPaused()) {
+            player.pause();
+            TextChannel activeTextChannel = player.getActiveTextChannel();
+            if (activeTextChannel != null) {
+                CentralMessaging.sendMessage(activeTextChannel, I18n.get(guild).getString("eventUsersLeftVC"));
+            }
         }
     }
 
@@ -230,4 +257,11 @@ public class EventListenerBoat extends AbstractEventListener {
         PlayerRegistry.destroyPlayer(event.getGuild());
     }
 
+    @Override
+    public void onHttpRequest(HttpRequestEvent event) {
+        if (event.getResponse().code >= 300) {
+            log.warn("Unsuccessful JDA HTTP Request:\n{}\nResponse:{}\n",
+                    event.getRequestRaw(), event.getResponseRaw());
+        }
+    }
 }

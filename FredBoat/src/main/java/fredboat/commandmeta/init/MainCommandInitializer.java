@@ -26,7 +26,6 @@ package fredboat.commandmeta.init;
 
 import fredboat.command.admin.*;
 import fredboat.command.fun.*;
-import fredboat.command.serg.*;
 import fredboat.command.maintenance.*;
 import fredboat.command.moderation.ClearCommand;
 import fredboat.command.moderation.HardbanCommand;
@@ -34,18 +33,15 @@ import fredboat.command.moderation.KickCommand;
 import fredboat.command.moderation.SoftbanCommand;
 import fredboat.command.util.*;
 import fredboat.commandmeta.CommandRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import fredboat.util.AsciiArtConstant;
 
 public class MainCommandInitializer {
-
-    private static final Logger log = LoggerFactory.getLogger(MusicCommandInitializer.class);
 
     public static void initCommands() {
         CommandRegistry.registerCommand("help", new HelpCommand(), "info");
         CommandRegistry.registerCommand("commands", new CommandsCommand(), "comms", "cmds");
-        CommandRegistry.registerCommand("invite", new InviteCommand());
-
+        CommandRegistry.registerCommand("invite", new InviteCommand());      
+        
         /* Bot Maintenance */
         CommandRegistry.registerCommand("unblacklist", new UnblacklistCommand(), "unlimit");
         CommandRegistry.registerCommand("version", new VersionCommand());
@@ -57,31 +53,29 @@ public class MainCommandInitializer {
         CommandRegistry.registerCommand("eval", new EvalCommand());
         CommandRegistry.registerCommand("shards", new ShardsCommand());
         CommandRegistry.registerCommand("revive", new ReviveCommand());
+        CommandRegistry.registerCommand("sentrydsn", new SentryDsnCommand());
         CommandRegistry.registerCommand("test", new TestCommand());
         CommandRegistry.registerCommand("gitinfo", new GitInfoCommand(), "git");
         CommandRegistry.registerCommand("exit", new ExitCommand());
-
+        
         /* Moderation */
         CommandRegistry.registerCommand("hardban", new HardbanCommand());
         CommandRegistry.registerCommand("kick", new KickCommand());
         CommandRegistry.registerCommand("softban", new SoftbanCommand());
         CommandRegistry.registerCommand("clear", new ClearCommand());
-
+        
         /* Util */
         CommandRegistry.registerCommand("serverinfo", new fredboat.command.util.ServerInfoCommand(), "guildinfo");
         CommandRegistry.registerCommand("userinfo", new fredboat.command.util.UserInfoCommand(), "memberinfo");
         CommandRegistry.registerCommand("ping", new PingCommand());
         CommandRegistry.registerCommand("fuzzy", new FuzzyUserSearchCommand());
-
+        
         /* Fun Commands */
         CommandRegistry.registerCommand("joke", new JokeCommand(), "jk");
-        //TODO LeetCommand is borken. Don't throw unnecessary error reports until it's fixed or removed.
-//        CommandRegistry.registerCommand("leet", new LeetCommand(), "1337", "l33t", "1ee7");
         CommandRegistry.registerCommand("riot", new RiotCommand());
         CommandRegistry.registerCommand("dance", new DanceCommand());
-        CommandRegistry.registerCommand("talk", new TalkCommand());
         CommandRegistry.registerCommand("akinator", new AkinatorCommand());
-        CommandRegistry.registerCommand("catgirl", new CatgirlCommand(), "neko", "catgrill", "catgril", "kittywoman", "catwoman");
+        CommandRegistry.registerCommand("catgirl", new CatgirlCommand(), "neko", "catgrill");
         CommandRegistry.registerCommand("avatar", new AvatarCommand(), "ava");
         CommandRegistry.registerCommand("say", new SayCommand());
 
@@ -105,25 +99,29 @@ public class MainCommandInitializer {
         CommandRegistry.registerCommand("noods", new RemoteFileCommand("http://i.imgur.com/mKdTGlg.png"));
         CommandRegistry.registerCommand("internetspeed", new RemoteFileCommand("http://i.imgur.com/84nbpQe.png"));
         CommandRegistry.registerCommand("powerpoint", new RemoteFileCommand("http://i.imgur.com/i65ss6p.png"));
-
+        
         /* Text Faces & Unicode 'Art' & ASCII 'Art' and Stuff */
-        CommandRegistry.registerCommand("s", new TextCommand("¯\\_(ツ)_/¯"), "shrug");
-        CommandRegistry.registerCommand("lenny", new TextCommand("( ͡° ͜ʖ ͡°)"));
+        CommandRegistry.registerCommand("shr", new TextCommand("¯\\_(ツ)_/¯"), "shrug");
         CommandRegistry.registerCommand("faceofdisapproval", new TextCommand("ಠ_ಠ"), "fod", "disapproving");
         CommandRegistry.registerCommand("sendenergy", new TextCommand("༼ つ ◕_◕ ༽つ"));
-        CommandRegistry.registerCommand("peeking", new TextCommand("┬┴┬┴┤ ͜ʖ ͡°) ├┬┴┬┴"), "peekinglenny", "peek");
         CommandRegistry.registerCommand("dealwithit", new TextCommand("(•\\_•) ( •\\_•)>⌐■-■ (⌐■_■)"), "dwi");
         CommandRegistry.registerCommand("channelingenergy", new TextCommand("(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧ ✧ﾟ･: *ヽ(◕ヮ◕ヽ)"));
         CommandRegistry.registerCommand("butterfly", new TextCommand("Ƹ̵̡Ӝ̵̨̄Ʒ"));
         CommandRegistry.registerCommand("angrytableflip", new TextCommand("(ノಠ益ಠ)ノ彡┻━┻"), "tableflipbutangry", "atp");
-        CommandRegistry.registerCommand("cooldog", new DogCommand(), "dog", "dogmeme");
+        CommandRegistry.registerCommand("dog", new TextCommand(AsciiArtConstant.DOG), "cooldog", "dogmeme");
         CommandRegistry.registerCommand("lood", new TextCommand("T-that's l-lewd, baka!!!"), "lewd", "l00d");
         CommandRegistry.registerCommand("useless", new TextCommand("This command is useless."));
         CommandRegistry.registerCommand("swtf", new TextCommand("¯\\\\(°_o)/¯"), "shrugwtf");
         CommandRegistry.registerCommand("hurray", new TextCommand("ヽ(^o^)ノ"), "yay", "woot");
+        // Lennies
+        CommandRegistry.registerCommand("spiderlenny", new TextCommand("/╲/╭( ͡° ͡° ͜ʖ ͡° ͡°)╮/╱\\"));
+        CommandRegistry.registerCommand("lenny", new TextCommand("( ͡° ͜ʖ ͡°)"));
+        CommandRegistry.registerCommand("peeking", new TextCommand("┬┴┬┴┤ ͜ʖ ͡°) ├┬┴┬┴"), "peekinglenny", "peek");
+        CommandRegistry.registerCommand("magicallenny", new TextCommand(AsciiArtConstant.MAGICAL_LENNY), "lennymagical");
+        CommandRegistry.registerCommand("eagleoflenny", new TextCommand(AsciiArtConstant.EAGLE_OF_LENNY), "eol", "lennyeagle");
 
         /* Misc - All commands under this line fall in this category */
-
+        
         CommandRegistry.registerCommand("mal", new MALCommand());
         CommandRegistry.registerCommand("brainfuck", new BrainfuckCommand());
 
@@ -134,18 +132,6 @@ public class MainCommandInitializer {
         CommandRegistry.registerCommand("pat", new PatCommand("https://imgur.com/a/WiPTl"));
         CommandRegistry.registerCommand("facedesk", new FacedeskCommand("https://imgur.com/a/I5Q4U"));
         CommandRegistry.registerCommand("roll", new RollCommand("https://imgur.com/a/lrEwS"));
-
-
-
-        //Added commands from selfhost
-        CommandRegistry.registerCommand("E9", new E9Command(), "e9", "E926", "e926");
-        CommandRegistry.registerCommand("E6", new E6Command(), "e6", "E621", "e621");
-        CommandRegistry.registerCommand("Firl", new FirlCommand(), "firl", "furry_irl", "fur");
-        CommandRegistry.registerCommand("razor", new RemoteFileCommand("https://pbs.twimg.com/profile_images/694250556500660224/GZWU-Au7.jpg"));
-        CommandRegistry.registerCommand("burd", new RemoteFileCommand("http://a.deviantart.net/avatars/b/u/burdplz.png"));
-        CommandRegistry.registerCommand("razors", new RemoteFileCommand("https://cdn.discordapp.com/attachments/268942002937266177/277239425350631426/31e6f6df-86dc-4509-a5f3-9781b337dbd28794698958514696739.jpg"));
-
-
     }
 
 }

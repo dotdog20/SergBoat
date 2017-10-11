@@ -25,20 +25,27 @@
 
 package fredboat.util;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import fredboat.Config;
+import fredboat.commandmeta.abs.CommandContext;
 import fredboat.feature.I18n;
 import fredboat.shared.constant.BotConstants;
+import net.dv8tion.jda.bot.entities.ApplicationInfo;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.OnlineStatus;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
-import net.dv8tion.jda.core.requests.*;
+import net.dv8tion.jda.core.requests.Requester;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -48,45 +55,14 @@ public class DiscordUtil {
     private static final Logger log = LoggerFactory.getLogger(DiscordUtil.class);
     private static final String USER_AGENT = "FredBoat DiscordBot (https://github.com/Frederikam/FredBoat, 1.0)";
 
-    private static String cachedOwnerId = null;
+    private static volatile ApplicationInfo discordAppInfo; //access this object through getApplicationInfo(jda)
+    private static final Object discordAppInfoLock = new Object();
 
     private DiscordUtil() {
     }
-
-    public static boolean isMainBot() {
-        return isMainBot(Config.CONFIG);
-    }
-
-    public static boolean isMusicBot() {
-        return isMusicBot(Config.CONFIG);
-    }
-
-    public static boolean isSelfBot() {
-        return isSelfBot(Config.CONFIG);
-    }
-
-    public static boolean isMainBot(Config conf) {
-        return (conf.getScope() & 0x100) != 0;
-    }
-
-    public static boolean isMusicBot(Config conf) {
-        return (conf.getScope() & 0x010) != 0;
-    }
-
-    public static boolean isSelfBot(Config conf) {
-        return (conf.getScope() & 0x001) != 0;
-    }
-
+    
     public static String getOwnerId(JDA jda) {
-        if (cachedOwnerId != null) return cachedOwnerId;
-
-        try {
-            cachedOwnerId = getApplicationInfo(jda.getToken().substring(4)).getJSONObject("owner").getString("id");
-        } catch (UnirestException e) {
-            throw new RuntimeException(e);
-        }
-
-        return cachedOwnerId;
+        return getApplicationInfo(jda).getOwner().getId();
     }
 
     public static boolean isMainBotPresent(Guild guild) {
@@ -123,32 +99,17 @@ public class DiscordUtil {
         return top.getPosition();
     }
 
-    public static void sendShardlessMessage(String channel, Message msg) {
-        sendShardlessMessage(msg.getJDA(), channel, msg.getRawContent());
-    }
-
-    public static void sendShardlessMessage(JDA jda, String channel, String content) {
-        JSONObject body = new JSONObject();
-        body.put("content", content);
-        new RestAction<Void>(jda, Route.Messages.SEND_MESSAGE.compile(channel), body) {
-            @Override
-            protected void handleResponse(Response response, Request request) {
-                if (response.isOk())
-                    request.onSuccess(null);
-                else
-                    request.onFailure(response);
-            }
-        }.queue();
-    }
-
     public static int getRecommendedShardCount(String token) throws UnirestException {
-        return Unirest.get(Requester.DISCORD_API_PREFIX + "gateway/bot")
+        HttpResponse<JsonNode> response = Unirest.get(Requester.DISCORD_API_PREFIX + "gateway/bot")
                 .header("Authorization", "Bot " + token)
                 .header("User-agent", USER_AGENT)
-                .asJson()
-                .getBody()
-                .getObject()
-                .getInt("shards");
+                .asJson();
+        if (response.getStatus() == 401) {
+            throw new IllegalArgumentException("Invalid discord bot token provided!");
+        } else if (response.getStatus() >= 400) {
+            log.error("Unexpected response from discord: {} {}", response.getStatus(), response.getStatusText());
+        }
+        return response.getBody().getObject().getInt("shards");
     }
 
     public static User getUserFromBearer(JDA jda, String token) {
@@ -169,29 +130,43 @@ public class DiscordUtil {
         return null;
     }
 
-    // https://discordapp.com/developers/docs/topics/oauth2
-    @Deprecated
-    public static JSONObject getApplicationInfo(String token) throws UnirestException {
-        return Unirest.get(Requester.DISCORD_API_PREFIX + "/oauth2/applications/@me")
+    @Nonnull
+    public static ApplicationInfo getApplicationInfo(@Nonnull JDA jda) {
+        //double checked lock pattern
+        ApplicationInfo info = discordAppInfo;
+        if (info == null) {
+            synchronized (discordAppInfoLock) {
+                info = discordAppInfo;
+                if (info == null) {
+                    discordAppInfo = info = jda.asBot().getApplicationInfo().complete();
+                }
+            }
+        }
+        return info;
+    }
+
+    public static String getUserId(String token) throws UnirestException {
+        return Unirest.get(Requester.DISCORD_API_PREFIX + "/users/@me")
                 .header("Authorization", "Bot " + token)
                 .header("User-agent", USER_AGENT)
                 .asJson()
                 .getBody()
-                .getObject();
+                .getObject()
+                .getString("id");
     }
 
     // ########## Moderation related helper functions
-    public static String getReasonForModAction(String[] commandArgs, Guild guild) {
+    public static String getReasonForModAction(CommandContext context) {
         String r = null;
-        if (commandArgs.length > 2) {
-            r = String.join(" ", Arrays.copyOfRange(commandArgs, 2, commandArgs.length));
+        if (context.args.length > 2) {
+            r = String.join(" ", Arrays.copyOfRange(context.args, 2, context.args.length));
         }
 
-        return I18n.get(guild).getString("modReason") + ": " + (r != null ? r : "No reason provided.");
+        return I18n.get(context, "modReason") + ": " + (r != null ? r : "No reason provided.");
     }
 
-    public static String formatReasonForAuditLog(String plainReason, Guild guild, Member invoker) {
-        String i18nAuditLogMessage = MessageFormat.format(I18n.get(guild).getString("modAuditLogMessage"),
+    public static String formatReasonForAuditLog(String plainReason, Member invoker) {
+        String i18nAuditLogMessage = MessageFormat.format(I18n.get(invoker.getGuild()).getString("modAuditLogMessage"),
                 invoker.getEffectiveName(), invoker.getUser().getDiscriminator(), invoker.getUser().getId()) + ", ";
         int auditLogMaxLength = 512 - i18nAuditLogMessage.length(); //512 is a hard limit by discord
         return i18nAuditLogMessage + (plainReason.length() > auditLogMaxLength ?

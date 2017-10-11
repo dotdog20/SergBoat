@@ -24,13 +24,11 @@
 
 package fredboat.command.fun;
 
+import fredboat.commandmeta.abs.CommandContext;
 import fredboat.commandmeta.abs.IFunCommand;
 import fredboat.feature.I18n;
-import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.text.MessageFormat;
 
@@ -50,21 +48,19 @@ public class HugCommand extends RandomImageCommand implements IFunCommand {
     }
 
     @Override
-    public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
-
-        Message hugMessage = null;
-        if (message.getMentionedUsers().size() > 0) {
-            if (message.getMentionedUsers().get(0) == guild.getJDA().getSelfUser()) {
-                hugMessage = new MessageBuilder().append(I18n.get(guild).getString("hugBot")).build();
+    public void onInvoke(CommandContext context) {
+        Message msg = context.msg;
+        String hugMessage = null;
+        if (msg.getMentionedUsers().size() > 0) {
+            if (msg.getMentionedUsers().get(0).getIdLong() == msg.getJDA().getSelfUser().getIdLong()) {
+                hugMessage = I18n.get(context, "hugBot");
             } else {
-                hugMessage = new MessageBuilder()
-                        .append("_")
-                        .append(MessageFormat.format(I18n.get(guild).getString("hugSuccess"), message.getMentionedUsers().get(0).getAsMention()))
-                        .append("_")
-                        .build();
+                hugMessage = "_"
+                        + MessageFormat.format(I18n.get(context, "hugSuccess"), msg.getMentionedUsers().get(0).getAsMention())
+                        + "_";
             }
         }
-        super.sendRandomFileWithMessage(channel, hugMessage);
+        context.replyImage(super.getRandomImageUrl(), hugMessage);
     }
 
     @Override

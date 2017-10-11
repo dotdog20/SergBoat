@@ -32,12 +32,8 @@ import fredboat.commandmeta.abs.*;
 import fredboat.feature.I18n;
 import fredboat.perms.PermissionLevel;
 import fredboat.perms.PermsUtil;
-import fredboat.util.DiscordUtil;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.text.MessageFormat;
 import java.util.*;
@@ -56,23 +52,20 @@ public class CommandsCommand extends Command implements IUtilCommand {
     //design inspiration by Weiss Schnee's bot
     //https://cdn.discordapp.com/attachments/230033957998166016/296356070685671425/unknown.png
     @Override
-    public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
+    public void onInvoke(CommandContext context) {
 
         //is this the music boat? shortcut to showing those commands
         //taking this shortcut we're missing out on showing a few commands to pure music bot users
         // http://i.imgur.com/511Hb8p.png screenshot from 1st April 2017
         //bot owner and debug commands (+ ;;music and ;;help) missing + the currently defunct config command
         //this is currently fine but might change in the future
-        if (DiscordUtil.isMusicBot()) {
-            new MusicHelpCommand().onInvoke(guild, channel, invoker, message, args);
-        }
-
-        if (DiscordUtil.isMainBot()) {
-            mainBotHelp(guild, channel, invoker);
+        new MusicHelpCommand().onInvoke(context);
+        if (Config.CONFIG.isDevDistribution()) {
+            mainBotHelp(context); //TODO: decide how to do handle this after unification of main and music bot
         }
     }
 
-    private void mainBotHelp(Guild guild, TextChannel channel, Member invoker) {
+    private void mainBotHelp(CommandContext context) {
         Set<String> commandsAndAliases = CommandRegistry.getRegisteredCommandsAndAliases();
         Set<String> unsortedAliases = new HashSet<>(); //hash set = only unique commands
         for (String commandOrAlias : commandsAndAliases) {
@@ -83,13 +76,14 @@ public class CommandsCommand extends Command implements IUtilCommand {
         List<String> sortedAliases = new ArrayList<>(unsortedAliases);
         Collections.sort(sortedAliases);
 
-        String fun = "**" + I18n.get(guild).getString("commandsFun") + ":** ";
-        String memes = "**" + I18n.get(guild).getString("commandsMemes") + ":**";
-        String util = "**" + I18n.get(guild).getString("commandsUtility") + ":** ";
-        String mod = "**" + I18n.get(guild).getString("commandsModeration") + ":** ";
-        String maint = "**" + I18n.get(guild).getString("commandsMaintenance") + ":** ";
-        String owner = "**" + I18n.get(guild).getString("commandsBotOwner") + ":** ";
-        //String serg = "**" + I18n.get(guild).getString("commandsSerg") + ":**";
+        ResourceBundle i18n = I18n.get(context.guild);
+        String fun = "**" + i18n.getString("commandsFun") + ":** ";
+        String memes = "**" + i18n.getString("commandsMemes") + ":**";
+        String util = "**" + i18n.getString("commandsUtility") + ":** ";
+        String mod = "**" + i18n.getString("commandsModeration") + ":** ";
+        String maint = "**" + i18n.getString("commandsMaintenance") + ":** ";
+        String owner = "**" + i18n.getString("commandsBotOwner") + ":** ";
+
         for (String alias : sortedAliases) {
             Command c = CommandRegistry.getCommand(alias).command;
             String formattedAlias = "`" + alias + "` ";
@@ -120,17 +114,17 @@ public class CommandsCommand extends Command implements IUtilCommand {
         out += "\n" + util;
         out += "\n" + memes;
 
-        if (invoker.hasPermission(Permission.MESSAGE_MANAGE)) {
+        if (context.invoker.hasPermission(Permission.MESSAGE_MANAGE)) {
             out += "\n" + mod;
         }
 
-        if (PermsUtil.isUserBotOwner(invoker.getUser())) {
+        if (PermsUtil.isUserBotOwner(context.invoker.getUser())) {
             out += "\n" + maint;
             out += "\n" + owner;
         }
 
-        out += "\n\n" + MessageFormat.format(I18n.get(guild).getString("commandsMoreHelp"), "`" + Config.CONFIG.getPrefix() + "help <command>`");
-        channel.sendMessage(out).queue();
+        out += "\n\n" + MessageFormat.format(i18n.getString("commandsMoreHelp"), "`" + Config.CONFIG.getPrefix() + "help <command>`");
+        context.reply(out);
     }
 
     @Override

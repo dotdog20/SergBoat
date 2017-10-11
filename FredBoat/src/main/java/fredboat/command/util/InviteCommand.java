@@ -25,28 +25,24 @@
 
 package fredboat.command.util;
 
-import com.mashape.unirest.http.exceptions.UnirestException;
 import fredboat.commandmeta.abs.Command;
+import fredboat.commandmeta.abs.CommandContext;
 import fredboat.commandmeta.abs.IUtilCommand;
 import fredboat.feature.I18n;
 import fredboat.util.DiscordUtil;
+import net.dv8tion.jda.bot.entities.ApplicationInfo;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.text.MessageFormat;
 
 public class InviteCommand extends Command implements IUtilCommand {
+
     @Override
-    public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args)  {
-        try {
-            String str = "https://discordapp.com/oauth2/authorize?&client_id=" + DiscordUtil.getApplicationInfo(invoker.getJDA().getToken().substring(4)).getString("id") + "&scope=bot";
-            String send = MessageFormat.format(I18n.get(guild).getString("invite"),DiscordUtil.getApplicationInfo(message.getJDA().getToken().substring(4)).getString("name"));
-            channel.sendMessage(send + "\n" + str).queue();
-        } catch (UnirestException e) {
-            throw new RuntimeException(e);
-        }
+    public void onInvoke(CommandContext context) {
+        ApplicationInfo appInfo = DiscordUtil.getApplicationInfo(context.guild.getJDA());
+        String str = "https://discordapp.com/oauth2/authorize?&client_id=" + appInfo.getId() + "&scope=bot";
+        String send = MessageFormat.format(I18n.get(context, "invite"), appInfo.getName());
+        context.reply(send + "\n" + str);
     }
 
     @Override

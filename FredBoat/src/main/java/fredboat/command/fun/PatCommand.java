@@ -25,13 +25,11 @@
 
 package fredboat.command.fun;
 
+import fredboat.commandmeta.abs.CommandContext;
 import fredboat.commandmeta.abs.IFunCommand;
 import fredboat.feature.I18n;
-import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.text.MessageFormat;
 
@@ -46,21 +44,19 @@ public class PatCommand extends RandomImageCommand implements IFunCommand {
     }
 
     @Override
-    public void onInvoke(Guild guild, TextChannel channel, Member invoker, Message message, String[] args) {
-
-        Message patMessage = null;
-        if (message.getMentionedUsers().size() > 0) {
-            if (message.getMentionedUsers().get(0) == guild.getJDA().getSelfUser()) {
-                patMessage = new MessageBuilder().append(I18n.get(guild).getString("patBot")).build();
+    public void onInvoke(CommandContext context) {
+        Message msg = context.msg;
+        String patMessage = null;
+        if (msg.getMentionedUsers().size() > 0) {
+            if (msg.getMentionedUsers().get(0).getIdLong() == msg.getJDA().getSelfUser().getIdLong()) {
+                patMessage = I18n.get(context, "patBot");
             } else {
-                patMessage = new MessageBuilder()
-                        .append("_")
-                        .append(MessageFormat.format(I18n.get(guild).getString("patSuccess"), message.getMentionedUsers().get(0).getAsMention()))
-                        .append("_")
-                        .build();
+                patMessage = "_"
+                        + MessageFormat.format(I18n.get(context, "patSuccess"), msg.getMentionedUsers().get(0).getAsMention())
+                        + "_";
             }
         }
-        super.sendRandomFileWithMessage(channel, patMessage);
+        context.replyImage(super.getRandomImageUrl(), patMessage);
     }
 
     @Override

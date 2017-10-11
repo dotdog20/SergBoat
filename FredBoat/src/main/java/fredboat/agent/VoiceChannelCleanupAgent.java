@@ -26,8 +26,10 @@
 package fredboat.agent;
 
 import fredboat.FredBoat;
-import fredboat.audio.GuildPlayer;
-import fredboat.audio.PlayerRegistry;
+import fredboat.audio.player.GuildPlayer;
+import fredboat.audio.player.LavalinkManager;
+import fredboat.audio.player.PlayerRegistry;
+import fredboat.command.music.control.VoteSkipCommand;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.VoiceChannel;
@@ -88,7 +90,8 @@ public class VoiceChannelCleanupAgent extends Thread {
 
                 if (getHumanMembersInVC(vc).size() == 0){
                     closed++;
-                    guild.getAudioManager().closeAudioConnection();
+                    VoteSkipCommand.guildSkipVotes.remove(guild.getIdLong());
+                    LavalinkManager.ins.closeConnection(guild);
                     VC_LAST_USED.remove(vc.getId());
                 } else if(isBeingUsed(vc)) {
                     VC_LAST_USED.put(vc.getId(), System.currentTimeMillis());
@@ -103,7 +106,7 @@ public class VoiceChannelCleanupAgent extends Thread {
 
                     if (System.currentTimeMillis() - lastUsed > UNUSED_CLEANUP_THRESHOLD) {
                         closed++;
-                        guild.getAudioManager().closeAudioConnection();
+                        LavalinkManager.ins.closeConnection(guild);
                         VC_LAST_USED.remove(vc.getId());
                     }
                 }
