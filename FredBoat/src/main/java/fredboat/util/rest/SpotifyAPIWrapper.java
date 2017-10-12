@@ -85,8 +85,8 @@ public class SpotifyAPIWrapper {
      * Get an instance of this class by using SpotifyAPIWrapper.getApi()
      */
     private SpotifyAPIWrapper() {
-        this.clientId = System.getenv(spotifyID);
-        this.clientSecret = System.getenv(spotifySecret);
+        this.clientId = System.getenv("spotifyID");
+        this.clientSecret = System.getenv("spotifySecret");
         refreshTokenIfNecessary();
     }
 
