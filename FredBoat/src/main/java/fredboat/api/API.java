@@ -42,7 +42,7 @@ public class API {
 
     private static final Logger log = LoggerFactory.getLogger(API.class);
 
-    private static final int PORT = 1356;
+    private static final int PORT = Integer.valueOf(System.getenv("PORT"));
 
     private API() {}
 
