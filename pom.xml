@@ -95,7 +95,7 @@
                 <artifactId>git-commit-id-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
-                    <dotGitDirectory>$Sergboat/../.git</dotGitDirectory>
+                    <dotGitDirectory>$https://github.com/dotdog20/SergBoat.git</dotGitDirectory>
                 </configuration>
             </plugin>
             <plugin>
