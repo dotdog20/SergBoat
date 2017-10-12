@@ -86,7 +86,7 @@ public class SpotifyAPIWrapper {
      */
     private SpotifyAPIWrapper() {
         this.clientId = System.getenv(spotifyID);
-        this.clientSecret = Syste.getenv(spotifySecret);
+        this.clientSecret = System.getenv(spotifySecret);
         refreshTokenIfNecessary();
     }
 
