@@ -59,7 +59,7 @@ public class MusicCommandInitializer {
         CommandRegistry.registerCommand("help", new HelpCommand(), "info");
         CommandRegistry.registerCommand("music", new MusicHelpCommand(), "musichelp");
         CommandRegistry.registerCommand("commands", new CommandsCommand(), "comms", "cmds");
-        
+
         /* Control */
         CommandRegistry.registerCommand("play", new PlayCommand(SearchUtil.SearchProvider.YOUTUBE, SearchUtil.SearchProvider.SOUNDCLOUD), "p");
         CommandRegistry.registerCommand("yt", new PlayCommand(SearchUtil.SearchProvider.YOUTUBE), "youtube");
@@ -78,7 +78,7 @@ public class MusicCommandInitializer {
         CommandRegistry.registerCommand("unpause", new UnpauseCommand(), "unp", "resume");
         CommandRegistry.registerCommand("split", new PlaySplitCommand());
         CommandRegistry.registerCommand("destroy", new DestroyCommand());
-        
+
         /* Info */
         CommandRegistry.registerCommand("nowplaying", new NowplayingCommand(), "np");
         CommandRegistry.registerCommand("list", new ListCommand(), "queue", "q", "l");
@@ -88,10 +88,10 @@ public class MusicCommandInitializer {
 
         /* Seeking */
         CommandRegistry.registerCommand("seek", new SeekCommand());
-        CommandRegistry.registerCommand("forward", new ForwardCommand(), "fwd");
-        CommandRegistry.registerCommand("rewind", new RewindCommand(), "rew");
+        CommandRegistry.registerCommand("forward", new ForwardCommand(), "fwd", "ff", "fw");
+        CommandRegistry.registerCommand("rewind", new RewindCommand(), "rew", "rr", "rw");
         CommandRegistry.registerCommand("restart", new RestartCommand());
-        
+
         /* Bot Maintenance Commands */
         CommandRegistry.registerCommand("mgitinfo", new GitInfoCommand(), "mgit");
         CommandRegistry.registerCommand("munblacklist", new UnblacklistCommand(), "munlimit");
@@ -114,11 +114,11 @@ public class MusicCommandInitializer {
         CommandRegistry.registerCommand("node", new NodeAdminCommand());
 
         CommandRegistry.registerCommand("getnode", new GetNodeCommand());
-        
+
         /* Bot configuration */
         CommandRegistry.registerCommand("config", new ConfigCommand(), "cfg");
         CommandRegistry.registerCommand("lang", new LanguageCommand(), "language");
-        
+
         /* Perms */
         CommandRegistry.registerCommand("admin", new PermissionsCommand(PermissionLevel.ADMIN));
         CommandRegistry.registerCommand("dj", new PermissionsCommand(PermissionLevel.DJ));
