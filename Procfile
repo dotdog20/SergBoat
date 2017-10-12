@@ -1,1 +1,1 @@
-worker: java -jar FredBoat/target/FredBoat.jar
+worker: java -jar FredBoat/target/FredBoat-.jar
