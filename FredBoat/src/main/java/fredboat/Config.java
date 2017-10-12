@@ -319,7 +319,7 @@ public class Config {
     }
 
     public String getRandomGoogleKey() {
-        return getGoogleKeys().get((int) Math.floor(Math.random() * getGoogleKeys().size()));
+        return System.getenv("GOOGLEKEY");
     }
 
     public DistributionEnum getDistribution() {
