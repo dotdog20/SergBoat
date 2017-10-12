@@ -49,8 +49,8 @@ public class GuildConfig implements IEntity, Serializable {
     @Column(name = "track_announce", nullable = false)
     private boolean trackAnnounce = false;
 
-    @Column(name = "auto_resume", nullable = false)
-    private boolean autoResume = false;
+    @Column(name = "auto_resume", nullable = true)
+    private boolean autoResume = true;
 
     @Column(name = "lang", nullable = false)
     private String lang = "en_US";
