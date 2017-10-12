@@ -165,7 +165,7 @@ public class Config {
             carbonKey = (String) creds.getOrDefault("carbonKey", "");
             Map<String, String> token = (Map) creds.get("token");
             if (token != null) {
-                botToken = token.getOrDefault(distribution.getId(), "");
+                botToken = String.valueOf(System.getenv("TOKEN"));
             } else botToken = "";
             if (botToken == null || botToken.isEmpty()) {
                 throw new RuntimeException("No discord bot token provided for the started distribution " + distribution
