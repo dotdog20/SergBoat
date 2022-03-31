@@ -176,7 +176,7 @@
             <!-- entity manager factory -->
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>1.5.4.RELEASE</version>
+            <version>2.5.12</version>
         </dependency>
         <dependency>
             <!-- entity manager factory -->
